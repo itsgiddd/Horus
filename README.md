@@ -20,6 +20,114 @@
 
 ---
 
+## 🎯 **Target Technical Specification**
+
+### **Overview**
+
+NOX is designed with a **multi-layered architecture** that seamlessly integrates machine learning capabilities with a modern desktop interface. This section provides a comprehensive technical overview for both users and developers looking to understand or extend the system.
+
+### **🔧 Core Architecture**
+
+NOX employs a **three-tier architecture** to separate concerns and optimize performance:
+
+| **Layer** | **Technology** | **Purpose** |
+|-----------|----------------|-------------|
+| **Presentation Layer** | React + TradingView Charts | User interface, data visualization, and user interaction |
+| **Application Layer** | Electron Main Process | Desktop app lifecycle, IPC coordination, and security |
+| **Processing Layer** | Python ML Backend | Machine learning inference, data processing, and prediction generation |
+
+### **📊 Input/Output Specification**
+
+#### **Input Requirements**
+- **Historical Price Data**: OHLCV (Open, High, Low, Close, Volume) time series data
+- **Technical Indicators**: Moving averages, RSI, MACD, Bollinger Bands
+- **Timeframe Parameters**: User-selected prediction windows (1m, 5m, 15m, 1h, 4h, 1d)
+- **Currency Pair Selection**: Major and minor forex pairs (e.g., EUR/USD, GBP/JPY)
+
+#### **Output Format**
+- **Prediction Signal**: BUY, SELL, or HOLD recommendation
+- **Confidence Score**: Percentage-based confidence level (0-100%)
+- **Predicted Price Movement**: Expected price change over selected timeframe
+- **Supporting Indicators**: Technical analysis data supporting the prediction
+
+### **🔄 Data Flow & Workflow**
+
+```
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   React UI  │◄───────►│   Electron   │◄───────►│   Python    │
+│  (Frontend) │   IPC   │ Main Process │  stdin/ │   Backend   │
+│             │         │              │  stdout │             │
+└─────────────┘         └──────────────┘         └─────────────┘
+       │                                                 │
+       │                                                 │
+       ▼                                                 ▼
+ ┌──────────┐                                    ┌──────────────┐
+ │TradingView│                                    │  ML Model    │
+ │  Charts   │                                    │ (Prediction) │
+ └──────────┘                                    └──────────────┘
+```
+
+**Step-by-Step Workflow:**
+
+1. **User Interaction**: User selects a currency pair and timeframe in the React UI
+2. **IPC Request**: Frontend sends prediction request via Electron's IPC mechanism
+3. **Backend Processing**: Python backend receives request, loads ML model, and processes input data
+4. **ML Inference**: Neural network analyzes historical data and generates prediction
+5. **Response Delivery**: Prediction results are serialized and sent back through IPC
+6. **Visualization**: React updates the chart with prediction markers and confidence indicators
+
+### **🧠 Main Components Breakdown**
+
+#### **1. React Frontend (`src/`)**
+- **Chart.js**: TradingView Lightweight Charts integration for candlestick visualization
+- **App.js**: Main application logic, state management, and IPC coordination
+- **UI Components**: Controls for currency pair selection, timeframe adjustment, and prediction triggers
+
+#### **2. Electron Main Process (`main.js`)**
+- **Window Management**: Creates and manages the desktop application window
+- **IPC Handler**: Receives prediction requests from renderer process
+- **Python Process Spawner**: Launches and maintains Python backend subprocess
+- **Security Layer**: Implements context isolation and secure communication protocols
+
+#### **3. Python ML Backend (`predictor.py`)**
+- **Model Loader**: Initializes pre-trained machine learning model
+- **Data Preprocessor**: Normalizes and transforms input data for ML inference
+- **Prediction Engine**: Executes neural network forward pass to generate predictions
+- **Output Formatter**: Serializes predictions into JSON format for IPC transmission
+
+### **💡 Practical Usage Examples**
+
+#### **For Users:**
+```markdown
+1. Launch NOX application
+2. Select EUR/USD from the currency pair dropdown
+3. Choose 15-minute timeframe
+4. Click "Predict" button
+5. View prediction signal (BUY/SELL/HOLD) with confidence score
+6. Analyze supporting technical indicators on the chart
+```
+
+#### **For Developers:**
+```markdown
+- Extend ML model by modifying `predictor.py`
+- Add new technical indicators in `Chart.js`
+- Customize IPC protocol in `main.js` for additional data exchange
+- Integrate external data APIs for real-time market feeds
+```
+
+### **📚 Detailed Reference**
+
+For **in-depth technical specifications**, including:
+- Detailed API documentation
+- ML model architecture diagrams
+- IPC protocol specifications
+- Performance optimization guidelines
+- Security considerations and best practices
+
+Please refer to the comprehensive **[`target_tech_spec.pdf`](target_tech_spec.pdf)** provided in this repository.
+
+---
+
 ## ✨ **Key Features**
 
 - 🤖 **Real-time forex prediction** using advanced ML models
@@ -47,158 +155,3 @@ The app consists of four main components:
 ## 📦 **Prerequisites**
 
 Before you begin, ensure you have the following installed:
-
-- ✅ **Node.js** (v16 or higher)
-- ✅ **Python** 3.8+
-- ✅ **PyInstaller** (`pip install pyinstaller`)
-
----
-
-## 🚀 **Installation**
-
-### 1️⃣ Clone the repository:
-```bash
-git clone <repository-url>
-cd forex-predictor
-```
-
-### 2️⃣ Install Node.js dependencies:
-```bash
-npm install
-```
-
-### 3️⃣ Install Python dependencies:
-```bash
-cd python
-pip install -r requirements.txt
-```
-
----
-
-## 💻 **Development**
-
-To run **NOX** in development mode:
-
-```bash
-npm run dev
-```
-
-This command starts both the React development server and the Electron app simultaneously.
-
----
-
-## 🔨 **Building**
-
-### 🐍 Build the Python predictor:
-```bash
-npm run build-python
-```
-This creates a standalone executable of the Python predictor in `python/dist/`.
-
-### 🍎 Build for macOS:
-```bash
-npm run package-mac
-```
-The packaged app will be available in the `dist/` folder as a `.dmg` file.
-
----
-
-## 📁 **Project Structure**
-
-```
-forex-predictor/
-├── public/                 # Electron main process and static assets
-│   ├── electron.js         # Electron main process
-│   └── index.html          # React app entry point
-├── src/                    # React source code
-│   ├── App.js              # Main React component
-│   ├── index.js            # React entry point
-│   ├── preload.js          # IPC preload script
-│   └── components/         # React components
-│       ├── Chart.js        # Chart visualization
-│       └── Dashboard.js    # Trading dashboard
-├── python/                 # Python ML backend
-│   ├── predictor.py        # ML prediction model
-│   └── requirements.txt    # Python dependencies
-├── assets/                 # App assets (icons, etc.)
-├── scripts/                # Build scripts
-│   └── build-python.js     # Script to package Python code
-├── package.json            # Node.js dependencies and scripts
-└── README.md
-```
-
----
-
-## ⚙️ **Configuration**
-
-The application can be configured by modifying:
-
-- **`public/electron.js`** - Electron main process settings
-- **`package.json`** - Build configuration and app metadata
-- **`python/predictor.py`** - ML model and prediction logic
-
----
-
-## 🎨 **Customization**
-
-### 📊 Adding More Technical Indicators
-
-To add more technical indicators to the chart, modify the Chart component in **`src/components/Chart.js`** to include additional series for indicators like:
-- **RSI** (Relative Strength Index)
-- **MACD** (Moving Average Convergence Divergence)
-- **Bollinger Bands**
-- And more!
-
-### 🧠 Improving the ML Model
-
-To enhance the prediction model:
-
-1. Update the **`predictor.py`** file with your enhanced ML model
-2. Add more technical indicators to the input data
-3. Use real forex data from APIs like **Alpha Vantage** or **Twelve Data**
-4. Implement different ML architectures like **Transformers** or **LSTMs**
-
----
-
-## 🚢 **Deployment**
-
-For production deployment:
-
-1. **Build the Python predictor**: `npm run build-python`
-2. **Build the Electron app** for your target platform
-3. **Sign the app** for distribution (especially for macOS)
-4. **Create installers** for different platforms
-
----
-
-## 🔧 **Troubleshooting**
-
-| Issue | Solution |
-|-------|----------|
-| Python process doesn't start | Ensure Python is in your PATH and PyInstaller is installed |
-| Charts don't render | Check the browser console for errors |
-| Packaging issues | Verify all required assets are included in the build configuration |
-
----
-
-## 📄 **License**
-
-MIT License
-
----
-
-<div align="center">
-
-### 💡 **Remember**
-
-**This is NOT financial advice!**
-
-By installing and using **NOX**, you acknowledge that you understand the risks involved in forex trading.
-
----
-
-**Made with 💜 by the NOX Team**
-
-⭐ Star this repo if you find it helpful!
-
-</div>
