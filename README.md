@@ -155,3 +155,7 @@ The app consists of four main components:
 ## 📦 **Prerequisites**
 
 Before you begin, ensure you have the following installed:
+
+
+## **NOT AN OPEN SOURCE PROJECT**
+I do not want hedgefunds reciving the actual code in order to make this theirs. If people want access you will need to talk to me directly and ask for that access. **WE WILL BE RUNNING BACKGROUND CHECKS**
