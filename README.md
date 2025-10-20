@@ -1,6 +1,6 @@
 <div align="center">
 
-# 𓂀 **HORUS - Hyperintelligent Omniscient Reconnaissance for Universal Strategies **
+# 𓂀 HORUS - Hyperintelligent Omniscient Reconnaissance for Universal Strategies
 
 ### *Your Intelligent Forex Prediction Platform*
 
