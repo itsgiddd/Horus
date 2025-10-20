@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 **NOX - Neural Optimization eXchange**
+# 𓂀 **HORUS - Hyperintelligent Omniscient Reconnaissance for Universal Strategies **
 
 ### *Your Intelligent Forex Prediction Platform*
 
@@ -14,7 +14,7 @@
 
 ## 📋 **About The Project**
 
-**NOX (Neural Optimization eXchange)** is a cutting-edge desktop application for predicting forex market movements using machine learning. Built with Electron, React, and Python, **NOX** empowers traders with AI-driven insights and real-time market analysis.
+**HORUS (Hyperintelligent Omniscient Reconnaissance for Universal Strategies)** is a cutting-edge desktop application for predicting forex market movements using machine learning. Built with Electron, React, and Python, **NOX** empowers traders with AI-driven insights and real-time market analysis.
 
 > ⚠️ **Disclaimer**: This is not financial advice. By installing and using this software, you acknowledge and understand the risks involved in forex trading.
 
