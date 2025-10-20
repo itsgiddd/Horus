@@ -1,70 +1,46 @@
-# 📄 HORUS Terms of Service
+# 📄 HORUS Terms of Service & Sharing Policy
 
 **Effective Date: October 20, 2025**
 
-By accessing or using HORUS (the “Platform”), you agree to be legally bound by the terms and conditions set forth in this Terms of Service (“Agreement”). If you do not agree to these terms, you may not access or use the Platform.
+By using HORUS (“the Platform”), you agree to be legally bound by the terms and conditions below. This agreement is binding and enforceable—if you do not agree, you must discontinue use immediately.
 
 ---
 
-## 1. Acceptance of Terms
+## 🚫 Prohibited Sharing & Use Clause
 
-By using HORUS, you acknowledge, understand, and expressly agree that you are entering into a legally binding contract with the owner(s)/maintainers of this project. All users are **bound by these terms upon accessing, downloading, or leveraging any aspect of the platform, including its code, data, or services.**
+### 1. Strict Prohibition
 
----
+- **HORUS is intended for individual, ethical traders only.**
+- You are expressly forbidden to share, sell, distribute, or disclose access to HORUS, its code, signals, strategic insights, or related content with:
+  - Multi-level marketing (MLM) groups
+  - Trust organizations, pools, or collectives
+  - Hedge funds, prop trading firms, or institutional investors
+  - Brokers, market makers, or affiliated representatives
 
-## 2. Eligibility and Access
+### 2. Consequences of Unauthorized Sharing
 
-- Access to the Platform is granted solely by the owner(s)/maintainer(s). Unauthorized access is strictly prohibited.
-- The Platform may be revoked at any time, for any reason, at the sole discretion of the owner(s).
-- Hedge funds, brokers, and market-making institutions are **strictly prohibited** from accessing or attempting to use the Platform.
+- If you share HORUS with any of the above parties **or** use it to directly benefit these parties (including results, trade signals, code, or documentation), you agree and acknowledge that the owner(s) of HORUS reserve the irrevocable right to pursue legal action against you for damages and full compensation.
+- Damages can include, but are not limited to: loss of proprietary value, competitive harm, reputational harm, and any other consequential damages arising from prohibited sharing.
+- You further agree that you are solely responsible for any violations, and that this contract is enforceable in applicable jurisdiction as determined by the owner(s).
 
----
+### 3. Monitoring & Enforcement
 
-## 3. Intellectual Property
-
-- HORUS and its content, design, and algorithms are proprietary and protected by applicable laws.
-- You may not reproduce, distribute, modify, or create derivative works without explicit permission.
-- Requests for source code or integration must be made directly to the owner(s).
-
----
-
-## 4. Assumption of Risk and Disclaimers
-
-- You agree to use HORUS at your own risk. The Platform is provided “AS IS” with **no warranties** of any kind, express or implied.
-- **No financial, investment, or trading advice** is offered. All trading carries risk; past performance is no guarantee of future results.
-- The owner(s) disclaim any liability for direct, indirect, incidental, or consequential damages arising from use of the Platform.
+- The owner(s) reserve all rights to monitor, audit, and investigate usage or sharing at their discretion.
+- Access may be revoked at any time and violations will be prosecuted to the fullest extent possible.
 
 ---
 
-## 5. Privacy
+## 🤝 Affirmation
 
-- HORUS does not collect or store personal data beyond what is necessary for access control and security.
-- By using the Platform, you consent to any processing of data required for authentication and protection.
-
----
-
-## 6. Modifications
-
-- The owner(s) reserve the right to modify these Terms of Service at any time. Continued use after changes constitutes acceptance of the revised terms.
+Your use of this Platform affirms your acceptance and understanding of these terms.  
+If you share, disclose, or facilitate access to HORUS in violation of this agreement, you agree you are liable and may be subject to **suit for compensation** as provided above.
 
 ---
 
-## 7. Governing Law
-
-This Agreement shall be governed by and construed in accordance with the laws of the jurisdiction specified by the owner(s), without regard to conflict of law principles.
-
----
-
-## 8. Contact
-
-For questions, access requests, or notices, contact:  
-**[Your Name or GitHub Profile]**  
+For inquiries or concerns, contact:  
+**Owner:** [Your Name or GitHub Handle]  
 **Email:** *your-email@domain.com*
 
 ---
 
-**By using HORUS, you affirm your acceptance of these Terms and acknowledge your obligations under this Agreement. If you disagree with any part of these Terms, you must immediately discontinue all use of the Platform.**
-
----
-
-*© 2025 HORUS. All Rights Reserved.*
+*© 2025 HORUS. All Rights Reserved. Unauthorized sharing strictly prohibited.*
