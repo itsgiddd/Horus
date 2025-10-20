@@ -1,161 +1,80 @@
 <div align="center">
-
-# 𓂀 HORUS - Hyperintelligent Omniscient Reconnaissance for Universal Strategies
-
-### *Your Intelligent Forex Prediction Platform*
-
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logo=github)
-![Trading](https://img.shields.io/badge/Trading-Automated-blueviolet?style=for-the-badge&logo=bitcoin)
-![Made With](https://img.shields.io/badge/Made%20With-💜-ff69b4?style=for-the-badge)
-
+  <h1>𓂀 HORUS</h1>
+  <h3>High-frequency Optimized Risk Unification System</h3>
+  <p>
+    <b>Your All-Seeing Eye for Smarter Forex & Crypto Trading</b>
+  </p>
+  
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logoColor=white&logo=github" />
+  <img src="https://img.shields.io/badge/Trading-Forex_&_Crypto-blueviolet?style=for-the-badge&logo=bitcoin" />
+  <img src="https://img.shields.io/badge/Built_with-Electron,_React,_Python-informational?style=for-the-badge&logo=react" />
 </div>
 
 ---
 
-## 📋 **About The Project**
+## 📈 About HORUS
 
-**HORUS (Hyperintelligent Omniscient Reconnaissance for Universal Strategies)** is a cutting-edge desktop application for predicting forex market movements using machine learning. Built with Electron, React, and Python, **NOX** empowers traders with AI-driven insights and real-time market analysis.
+**HORUS** (High-frequency Optimized Risk Unification System) is a next-generation AI-powered platform for live forex and crypto trading. Leveraging advanced machine learning and seamless, frosted-glass UI, HORUS gives traders edge-defining insights, real-time signals, and a unified dashboard for digital asset markets.
 
-> ⚠️ **Disclaimer**: This is not financial advice. By installing and using this software, you acknowledge and understand the risks involved in forex trading.
-
----
-
-## 🎯 **Target Technical Specification**
-
-### **Overview**
-
-NOX is designed with a **multi-layered architecture** that seamlessly integrates machine learning capabilities with a modern desktop interface. This section provides a comprehensive technical overview for both users and developers looking to understand or extend the system.
-
-### **🔧 Core Architecture**
-
-NOX employs a **three-tier architecture** to separate concerns and optimize performance:
-
-| **Layer** | **Technology** | **Purpose** |
-|-----------|----------------|-------------|
-| **Presentation Layer** | React + TradingView Charts | User interface, data visualization, and user interaction |
-| **Application Layer** | Electron Main Process | Desktop app lifecycle, IPC coordination, and security |
-| **Processing Layer** | Python ML Backend | Machine learning inference, data processing, and prediction generation |
-
-### **📊 Input/Output Specification**
-
-#### **Input Requirements**
-- **Historical Price Data**: OHLCV (Open, High, Low, Close, Volume) time series data
-- **Technical Indicators**: Moving averages, RSI, MACD, Bollinger Bands
-- **Timeframe Parameters**: User-selected prediction windows (1m, 5m, 15m, 1h, 4h, 1d)
-- **Currency Pair Selection**: Major and minor forex pairs (e.g., EUR/USD, GBP/JPY)
-
-#### **Output Format**
-- **Prediction Signal**: BUY, SELL, or HOLD recommendation
-- **Confidence Score**: Percentage-based confidence level (0-100%)
-- **Predicted Price Movement**: Expected price change over selected timeframe
-- **Supporting Indicators**: Technical analysis data supporting the prediction
-
-### **🔄 Data Flow & Workflow**
-
-```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   React UI  │◄───────►│   Electron   │◄───────►│   Python    │
-│  (Frontend) │   IPC   │ Main Process │  stdin/ │   Backend   │
-│             │         │              │  stdout │             │
-└─────────────┘         └──────────────┘         └─────────────┘
-       │                                                 │
-       │                                                 │
-       ▼                                                 ▼
- ┌──────────┐                                    ┌──────────────┐
- │TradingView│                                    │  ML Model    │
- │  Charts   │                                    │ (Prediction) │
- └──────────┘                                    └──────────────┘
-```
-
-**Step-by-Step Workflow:**
-
-1. **User Interaction**: User selects a currency pair and timeframe in the React UI
-2. **IPC Request**: Frontend sends prediction request via Electron's IPC mechanism
-3. **Backend Processing**: Python backend receives request, loads ML model, and processes input data
-4. **ML Inference**: Neural network analyzes historical data and generates prediction
-5. **Response Delivery**: Prediction results are serialized and sent back through IPC
-6. **Visualization**: React updates the chart with prediction markers and confidence indicators
-
-### **🧠 Main Components Breakdown**
-
-#### **1. React Frontend (`src/`)**
-- **Chart.js**: TradingView Lightweight Charts integration for candlestick visualization
-- **App.js**: Main application logic, state management, and IPC coordination
-- **UI Components**: Controls for currency pair selection, timeframe adjustment, and prediction triggers
-
-#### **2. Electron Main Process (`main.js`)**
-- **Window Management**: Creates and manages the desktop application window
-- **IPC Handler**: Receives prediction requests from renderer process
-- **Python Process Spawner**: Launches and maintains Python backend subprocess
-- **Security Layer**: Implements context isolation and secure communication protocols
-
-#### **3. Python ML Backend (`predictor.py`)**
-- **Model Loader**: Initializes pre-trained machine learning model
-- **Data Preprocessor**: Normalizes and transforms input data for ML inference
-- **Prediction Engine**: Executes neural network forward pass to generate predictions
-- **Output Formatter**: Serializes predictions into JSON format for IPC transmission
-
-### **💡 Practical Usage Examples**
-
-#### **For Users:**
-```markdown
-1. Launch NOX application
-2. Select EUR/USD from the currency pair dropdown
-3. Choose 15-minute timeframe
-4. Click "Predict" button
-5. View prediction signal (BUY/SELL/HOLD) with confidence score
-6. Analyze supporting technical indicators on the chart
-```
-
-#### **For Developers:**
-```markdown
-- Extend ML model by modifying `predictor.py`
-- Add new technical indicators in `Chart.js`
-- Customize IPC protocol in `main.js` for additional data exchange
-- Integrate external data APIs for real-time market feeds
-```
-
-### **📚 Detailed Reference**
-
-For **in-depth technical specifications**, including:
-- Detailed API documentation
-- ML model architecture diagrams
-- IPC protocol specifications
-- Performance optimization guidelines
-- Security considerations and best practices
-
-Please refer to the comprehensive **[`target_tech_spec.pdf`](target_tech_spec.pdf)** provided in this repository.
+> ⚡ **Cut through noise. Trade with vision.**  
+> HORUS combines speed, clarity, and risk management—just like the all-seeing Eye.
 
 ---
 
-## ✨ **Key Features**
+## 🚀 Features
 
-- 🤖 **Real-time forex prediction** using advanced ML models
-- 📊 **Interactive chart visualization** powered by TradingView Lightweight Charts
-- 📈 **Technical indicators** and comprehensive market analysis
-- 💻 **Cross-platform desktop application** (macOS, Windows, Linux)
-- 🔒 **Secure IPC communication** between frontend and backend
-- ⚡ **Lightning-fast predictions** with optimized Python backend
-
----
-
-## 🏗️ **Architecture**
-
-The app consists of four main components:
-
-| Component | Description |
-|-----------|-------------|
-| **React Frontend** | User interface built with React and TradingView Lightweight Charts |
-| **Electron Main Process** | Manages the desktop app and coordinates between frontend and backend |
-| **Python Backend** | Machine learning model for forex prediction |
-| **IPC Communication** | Secure communication bridge between frontend and Python backend |
+- **Real-time Forex & Crypto Signals**
+- **AI-Powered Predictive Models**
+- **Risk Management Dashboard**
+- **Customizable Notification Alerts**
+- **Multi-asset Support (Crypto & Major Forex Pairs)**
+- **Beautiful, Frosted-Glass UI**
+- **Modular API Integrations (OANDA, CryptoCompare, + more)**
 
 ---
 
-## 📦 **Prerequisites**
+## 🛠️ Tech Stack
 
-Before you begin, ensure you have the following installed:
+| Layer                | Technology                          | Role                                          |
+|----------------------|-------------------------------------|-----------------------------------------------|
+| Presentation         | React + TradingView                 | User interface, live charting, notifications  |
+| Application          | Electron                            | Desktop delivery, secure shell integration    |
+| Processing           | Python ML, Node.js, REST APIs       | Market data aggregation, predictions, signals |
 
+---
 
-## **NOT AN OPEN SOURCE PROJECT**
-I do not want hedgefunds reciving the actual code in order to make this theirs. If people want access you will need to talk to me directly and ask for that access. **WE WILL BE RUNNING BACKGROUND CHECKS**
+## 🎯 Input & Output
+
+**Input:**  
+- Historical & real-time OHLCV market data  
+- Technical indicators (MA, RSI, MACD, BBANDS, etc.)  
+- User-defined currency/crypto pairs and timeframes  
+
+**Output:**  
+- AI-generated trading signals (Buy/Sell/Hold)  
+- Confidence scores (%)  
+- Visual trade markups & performance analytics  
+
+---
+
+## ⚠️ Disclaimer
+
+This project is for educational and informational purposes only. Trading is risky—use at your own discretion. Not financial advice.
+
+---
+
+## 🤝 Contributing
+
+Feel free to open issues or submit PRs! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+---
+
+## 📬 Contact
+
+Created by [@Zenyith](https://github.com/Zenyith) • Questions? Open an issue!
+
+---
+
+<div align="center">
+  <sub>Built with ☕ and vision. Powered by AI.<br/>𓂀 HORUS © 2025</sub>
+</div>
