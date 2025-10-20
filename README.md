@@ -71,7 +71,7 @@ Feel free to open issues or submit PRs! See [CONTRIBUTING.md](CONTRIBUTING.md) f
 
 ## 📬 Contact
 
-Created by [@Zenyith](https://github.com/Zenyith) • Questions? Open an issue!
+Created by [@itsgiddd](https://github.com/itsgiddd) • Questions? Open an issue!
 
 ---
 
