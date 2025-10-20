@@ -38,7 +38,7 @@ If you share, disclose, or facilitate access to HORUS in violation of this agree
 ---
 
 For inquiries or concerns, contact:  
-**Owner:** Zenyith  
+**Owner:** itsgiddd  
 
 ---
 
