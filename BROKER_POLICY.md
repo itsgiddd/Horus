@@ -19,7 +19,7 @@ While hedge funds leverage proprietary technology to maximize returns, they ofte
 ## How to Request Access
 
 Interested independent traders, ethical researchers, or genuine collaborators:  
-Contact [Zenyith](mailto:your-email@domain.com) directly or open a GitHub issue sharing your background and intent.
+Contact [itsgiddd](gideonliciagamarketing@gmail.com) directly or open a GitHub issue sharing your background and intent.
 
 ---
 
