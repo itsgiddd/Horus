@@ -19,7 +19,7 @@ By using HORUS (“the Platform”), you agree to be legally bound by the terms 
 
 ### 2. Consequences of Unauthorized Sharing
 
-- If you share HORUS with any of the above parties **or** use it to directly benefit these parties (including results, trade signals, code, or documentation), you agree and acknowledge that I, Zenyith, reserve the irrevocable right to pursue legal action against you for damages and full compensation.
+- If you share HORUS with any of the above parties **or** use it to directly benefit these parties (including results, trade signals, code, or documentation), you agree and acknowledge that I, Gid, reserve the irrevocable right to pursue legal action against you for damages and full compensation.
 - Damages can include, but are not limited to: loss of proprietary value, competitive harm, reputational harm, and any other consequential damages arising from prohibited sharing.
 - You further agree that you are solely responsible for any violations, and that this contract is enforceable in applicable jurisdiction as determined by the owner.
 
