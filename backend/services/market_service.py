@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 import ta
 import logging
+from .oanda_api import OandaAPI
+from .cryptocompare_api import CryptoCompareAPI
 
 logger = logging.getLogger(__name__)
 
@@ -12,13 +14,16 @@ class MarketService:
     """Service for fetching and processing market data"""
 
     def __init__(self):
-        self.crypto_api_key = os.getenv('CRYPTOCOMPARE_API_KEY', 'demo')
-        self.base_url_crypto = 'https://min-api.cryptocompare.com/data'
+        # Initialize API clients
+        self.oanda = OandaAPI()
+        self.cryptocompare = CryptoCompareAPI()
+
+        # Fallback APIs
         self.coingecko_url = 'https://api.coingecko.com/api/v3'
 
         # Supported assets
-        self.crypto_symbols = ['BTC', 'ETH', 'SOL', 'ADA', 'XRP', 'DOT', 'LINK', 'MATIC', 'AVAX', 'UNI']
-        self.forex_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD']
+        self.crypto_symbols = self.cryptocompare.crypto_symbols
+        self.forex_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD', 'USD/CHF']
 
     def get_current_price(self, symbol):
         """Get current price for a symbol"""
@@ -33,9 +38,23 @@ class MarketService:
             return self._get_mock_price(symbol)
 
     def _get_crypto_price(self, symbol):
-        """Fetch crypto price from CoinGecko (free API)"""
+        """Fetch crypto price using CryptoCompare API"""
         try:
-            # Map common symbols to CoinGecko IDs
+            # Try CryptoCompare first
+            if self.cryptocompare.is_configured():
+                price_data = self.cryptocompare.get_price_with_details(symbol)
+                if price_data:
+                    return {
+                        'symbol': symbol,
+                        'price': price_data['price'],
+                        'change_24h': price_data['change_pct_24h'],
+                        'volume_24h': price_data['volume_24h'],
+                        'high_24h': price_data['high_24h'],
+                        'low_24h': price_data['low_24h'],
+                        'timestamp': price_data['timestamp']
+                    }
+
+            # Fallback to CoinGecko
             coin_map = {
                 'BTC': 'bitcoin',
                 'ETH': 'ethereum',
@@ -71,14 +90,28 @@ class MarketService:
                     'timestamp': datetime.utcnow().isoformat()
                 }
         except Exception as e:
-            logger.error(f'CoinGecko API error: {e}')
+            logger.error(f'Crypto API error: {e}')
 
         return self._get_mock_price(symbol)
 
     def _get_forex_price(self, pair):
-        """Get forex price (using free forex API)"""
+        """Get forex price using OANDA API"""
         try:
-            # Use exchangerate-api.com (free tier)
+            # Try OANDA first
+            if self.oanda.is_configured():
+                instrument = self.oanda.format_instrument(pair)
+                price_data = self.oanda.get_current_price(instrument)
+                if price_data:
+                    return {
+                        'symbol': pair,
+                        'price': price_data['price'],
+                        'bid': price_data['bid'],
+                        'ask': price_data['ask'],
+                        'spread': price_data['spread'],
+                        'timestamp': price_data['timestamp']
+                    }
+
+            # Fallback to exchangerate API
             base, quote = pair.split('/')
             url = f'https://open.er-api.com/v6/latest/{base}'
 
@@ -90,7 +123,6 @@ class MarketService:
                 return {
                     'symbol': pair,
                     'price': rate,
-                    'change_24h': 0.15,  # Mock data for demo
                     'timestamp': datetime.utcnow().isoformat()
                 }
         except Exception as e:
@@ -142,8 +174,25 @@ class MarketService:
             return self._generate_mock_history(symbol, limit)
 
     def _get_crypto_historical(self, symbol, timeframe, limit):
-        """Fetch crypto historical data from CoinGecko"""
+        """Fetch crypto historical data using CryptoCompare API"""
         try:
+            # Try CryptoCompare first
+            if self.cryptocompare.is_configured():
+                candles = self.cryptocompare.get_historical_data(symbol, timeframe, limit)
+                if candles:
+                    ohlcv = []
+                    for candle in candles:
+                        ohlcv.append({
+                            'timestamp': candle['timestamp'] * 1000,
+                            'open': candle['open'],
+                            'high': candle['high'],
+                            'low': candle['low'],
+                            'close': candle['close'],
+                            'volume': candle.get('volume_to', 0)
+                        })
+                    return ohlcv
+
+            # Fallback to CoinGecko
             coin_map = {
                 'BTC': 'bitcoin',
                 'ETH': 'ethereum',
@@ -178,7 +227,29 @@ class MarketService:
         return self._generate_mock_history(symbol, limit)
 
     def _get_forex_historical(self, pair, timeframe, limit):
-        """Generate forex historical data (mock for demo)"""
+        """Fetch forex historical data using OANDA API"""
+        try:
+            if self.oanda.is_configured():
+                instrument = self.oanda.format_instrument(pair)
+                granularity = self.oanda.convert_granularity(timeframe)
+                candles = self.oanda.get_historical_data(instrument, granularity, limit)
+
+                if candles:
+                    ohlcv = []
+                    for candle in candles:
+                        timestamp_dt = datetime.fromisoformat(candle['timestamp'].replace('Z', '+00:00'))
+                        ohlcv.append({
+                            'timestamp': int(timestamp_dt.timestamp() * 1000),
+                            'open': candle['open'],
+                            'high': candle['high'],
+                            'low': candle['low'],
+                            'close': candle['close'],
+                            'volume': candle['volume']
+                        })
+                    return ohlcv
+        except Exception as e:
+            logger.error(f'Error fetching forex history: {e}')
+
         return self._generate_mock_history(pair, limit)
 
     def _generate_mock_history(self, symbol, limit):

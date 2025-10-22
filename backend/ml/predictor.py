@@ -2,16 +2,34 @@ import numpy as np
 import logging
 from datetime import datetime
 import random
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from simulation.virtual_economy import VirtualEconomy
+from ml.diffusion.diffusion_model import DiffusionForecaster
 
 logger = logging.getLogger(__name__)
 
 
 class MLPredictor:
-    """Machine Learning predictor for trading signals"""
+    """Machine Learning predictor for trading signals with diffusion model"""
 
     def __init__(self):
         self.models = {}
+        self.diffusion_forecaster = None
         self.is_trained = False
+
+        try:
+            self.diffusion_forecaster = DiffusionForecaster(
+                lookback_window=60,
+                forecast_horizon=10,
+                num_traders=100
+            )
+            logger.info('Diffusion forecaster initialized')
+        except Exception as e:
+            logger.error(f'Error initializing diffusion forecaster: {e}')
+            self.diffusion_forecaster = None
 
     def predict(self, symbol, indicators):
         """
@@ -157,6 +175,152 @@ class MLPredictor:
         if symbol in self.models:
             return self.models[symbol]
         return None
+
+    def predict_with_diffusion(self, symbol, historical_data, indicators):
+        """
+        Advanced prediction using diffusion model and virtual economy
+
+        Args:
+            symbol: Trading symbol
+            historical_data: Historical OHLCV data (list of dicts or DataFrame)
+            indicators: Current technical indicators
+
+        Returns:
+            Dict with prediction, candles, probabilities, and scenarios
+        """
+        try:
+            if self.diffusion_forecaster is None:
+                logger.warning('Diffusion forecaster not available, using fallback')
+                return self._fallback_prediction_with_simulation(symbol, historical_data, indicators)
+
+            import pandas as pd
+
+            if isinstance(historical_data, list):
+                df = pd.DataFrame(historical_data)
+            else:
+                df = historical_data
+
+            if len(df) < 60:
+                logger.warning('Insufficient historical data for diffusion model')
+                return self._fallback_prediction_with_simulation(symbol, historical_data, indicators)
+
+            forecast_result = self.diffusion_forecaster.predict(df, num_samples=5)
+
+            predicted_candles = forecast_result['candles']
+
+            initial_price = df['close'].iloc[-1]
+            final_price = predicted_candles[-1]['close']
+            price_change_pct = (final_price - initial_price) / initial_price * 100
+
+            if price_change_pct > 1.0:
+                direction = 'BUY'
+                confidence = min(60 + abs(price_change_pct) * 5, 95)
+            elif price_change_pct < -1.0:
+                direction = 'SELL'
+                confidence = min(60 + abs(price_change_pct) * 5, 95)
+            else:
+                direction = 'HOLD'
+                confidence = 50 + abs(price_change_pct) * 10
+
+            economy = VirtualEconomy(
+                num_traders=100,
+                initial_price=initial_price,
+                historical_data=df,
+                simulation_steps=50
+            )
+
+            probabilities = economy.calculate_scenario_probabilities(num_scenarios=10)
+
+            base_prediction = self._rule_based_prediction(
+                indicators.get('rsi', 50),
+                indicators.get('macd', 0),
+                indicators.get('macd_signal', 0),
+                indicators.get('macd_diff', 0),
+                indicators.get('sma_20', initial_price),
+                indicators.get('sma_50', initial_price)
+            )
+
+            combined_confidence = (confidence * 0.6 + base_prediction['confidence'] * 0.4)
+
+            return {
+                'direction': direction,
+                'confidence': round(combined_confidence, 1),
+                'predicted_price': final_price,
+                'target_price': round(final_price, 2),
+                'stop_loss': round(initial_price * (0.985 if direction == 'BUY' else 1.015), 2),
+                'price_change_pct': round(price_change_pct, 2),
+                'predicted_candles': predicted_candles,
+                'scenario_probabilities': {
+                    'bullish': round(probabilities['bullish'] * 100, 1),
+                    'bearish': round(probabilities['bearish'] * 100, 1),
+                    'neutral': round(probabilities['neutral'] * 100, 1),
+                },
+                'confidence_interval': {
+                    'lower': round(probabilities['confidence_interval_95'][0], 2),
+                    'upper': round(probabilities['confidence_interval_95'][1], 2)
+                },
+                'timestamp': datetime.utcnow().isoformat(),
+                'model_type': 'diffusion'
+            }
+
+        except Exception as e:
+            logger.error(f'Error in diffusion prediction: {e}')
+            return self._fallback_prediction_with_simulation(symbol, historical_data, indicators)
+
+    def _fallback_prediction_with_simulation(self, symbol, historical_data, indicators):
+        """Fallback prediction using simulation only"""
+        try:
+            import pandas as pd
+
+            if isinstance(historical_data, list):
+                df = pd.DataFrame(historical_data)
+            else:
+                df = historical_data
+
+            initial_price = df['close'].iloc[-1] if len(df) > 0 else 100.0
+
+            economy = VirtualEconomy(
+                num_traders=100,
+                initial_price=initial_price,
+                historical_data=df if len(df) >= 20 else None,
+                simulation_steps=50
+            )
+
+            probabilities = economy.calculate_scenario_probabilities(num_scenarios=5)
+            predicted_candles = economy.predict_next_candles(num_candles=10, scenario_count=3)
+
+            final_price = predicted_candles[-1]['close']
+            price_change_pct = (final_price - initial_price) / initial_price * 100
+
+            if price_change_pct > 0.5:
+                direction = 'BUY'
+            elif price_change_pct < -0.5:
+                direction = 'SELL'
+            else:
+                direction = 'HOLD'
+
+            confidence = 50 + abs(price_change_pct) * 5
+
+            return {
+                'direction': direction,
+                'confidence': round(min(confidence, 85), 1),
+                'predicted_price': round(final_price, 2),
+                'target_price': round(final_price, 2),
+                'stop_loss': round(initial_price * (0.985 if direction == 'BUY' else 1.015), 2),
+                'price_change_pct': round(price_change_pct, 2),
+                'predicted_candles': predicted_candles,
+                'scenario_probabilities': {
+                    'bullish': round(probabilities['bullish'] * 100, 1),
+                    'bearish': round(probabilities['bearish'] * 100, 1),
+                    'neutral': round(probabilities['neutral'] * 100, 1),
+                },
+                'timestamp': datetime.utcnow().isoformat(),
+                'model_type': 'simulation'
+            }
+
+        except Exception as e:
+            logger.error(f'Error in fallback prediction: {e}')
+            return self._default_prediction()
 
 
 class LSTMPredictor:

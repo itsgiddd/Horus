@@ -12,3 +12,25 @@ python-dotenv==1.0.0
 websocket-client==1.6.4
 aiohttp==3.9.1
 asyncio==3.4.3
+
+# OANDA API for forex data
+oandapyV20==0.7.2
+
+# CryptoCompare API integration
+cryptocompare==0.7.6
+
+# Diffusion model dependencies
+torch==2.1.0
+diffusers==0.25.0
+transformers==4.36.0
+
+# Multi-agent simulation
+mesa==2.1.5
+
+# Additional ML libraries
+scipy==1.11.4
+statsmodels==0.14.1
+
+# Pattern recognition
+ta-lib==0.4.28
+mplfinance==0.12.10b0
