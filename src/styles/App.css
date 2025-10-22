@@ -6,13 +6,16 @@
   overflow: hidden;
 }
 
-.app-container {
+.app-layout {
   flex: 1;
-  overflow: hidden;
-  padding: 20px;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
 }
 
 /* Animated background particles */
