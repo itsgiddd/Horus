@@ -1,0 +1,31 @@
+.glass-card {
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.glass-card.clickable {
+  cursor: pointer;
+}
+
+.glass-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.glass-card h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.glass-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}

@@ -1,0 +1,78 @@
+appId: com.horus.trading
+productName: HORUS
+copyright: Copyright © 2025 HORUS
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - electron/**/*
+  - dist-vite/**/*
+  - package.json
+
+mac:
+  category: public.app-category.finance
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.icns
+  darkModeSupport: true
+  hardenedRuntime: true
+  gatekeeperAssess: false
+
+dmg:
+  title: HORUS ${version}
+  icon: build/icon.icns
+  background: build/background.png
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 140
+      y: 180
+      type: file
+    - x: 400
+      y: 180
+      type: link
+      path: /Applications
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.ico
+  publisherName: HORUS Trading Systems
+  requestedExecutionLevel: asInvoker
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: HORUS
+
+portable:
+  artifactName: HORUS-${version}-portable.exe
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Office;Finance
+  icon: build/icons/
+  synopsis: AI-powered forex and crypto trading platform
+  description: High-frequency Optimized Risk Unification System - Your all-seeing eye for smarter trading
+
+publish: null
