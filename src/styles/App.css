@@ -100,6 +100,8 @@ body {
   flex: 1;
   overflow: hidden;
   position: relative;
+  padding: 24px;
+  display: flex;
 }
 
 /* Animated liquid glass background effect */

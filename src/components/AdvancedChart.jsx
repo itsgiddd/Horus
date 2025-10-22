@@ -2,17 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
 import './AdvancedChart.css';
 
-function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange }) {
+function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const predictionSeriesRef = useRef(null);
 
+  const [currentSymbol, setCurrentSymbol] = useState(symbol);
+  const [currentTimeframe, setCurrentTimeframe] = useState(timeframe);
   const [chartData, setChartData] = useState([]);
   const [predictionCandles, setPredictionCandles] = useState([]);
   const [patterns, setPatterns] = useState([]);
   const [pushAnalysis, setPushAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [predicting, setPredicting] = useState(false);
+  const [predictionGenerated, setPredictionGenerated] = useState(false);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -94,13 +98,18 @@ function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange })
 
   useEffect(() => {
     fetchMarketData();
-  }, [symbol, timeframe]);
+  }, [currentSymbol, currentTimeframe]);
 
   const fetchMarketData = async () => {
     setLoading(true);
+    setPredictionGenerated(false);
+    setPredictionCandles([]);
+    if (predictionSeriesRef.current) {
+      predictionSeriesRef.current.setData([]);
+    }
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/market/history/${symbol}?timeframe=${timeframe}&limit=200`
+        `http://127.0.0.1:5000/api/market/history/${currentSymbol}?timeframe=${currentTimeframe}&limit=200`
       );
       const data = await response.json();
 
@@ -118,7 +127,7 @@ function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange })
           candleSeriesRef.current.setData(formattedData);
         }
 
-        fetchAdvancedAnalysis();
+        fetchPatternAndPushAnalysis();
       }
     } catch (error) {
       console.error('Error fetching market data:', error);
@@ -127,14 +136,11 @@ function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange })
     }
   };
 
-  const fetchAdvancedAnalysis = async () => {
+  const fetchPatternAndPushAnalysis = async () => {
     try {
-      const [patternsRes, pushRes, predictionRes] = await Promise.all([
-        fetch(`http://127.0.0.1:5000/api/signals/patterns/${symbol}?timeframe=${timeframe}`),
-        fetch(`http://127.0.0.1:5000/api/signals/push-analysis/${symbol}?timeframe=${timeframe}`),
-        fetch(`http://127.0.0.1:5000/api/signals/advanced-prediction/${symbol}?timeframe=${timeframe}`, {
-          method: 'POST'
-        })
+      const [patternsRes, pushRes] = await Promise.all([
+        fetch(`http://127.0.0.1:5000/api/signals/patterns/${currentSymbol}?timeframe=${currentTimeframe}`),
+        fetch(`http://127.0.0.1:5000/api/signals/push-analysis/${currentSymbol}?timeframe=${currentTimeframe}`),
       ]);
 
       if (patternsRes.ok) {
@@ -148,15 +154,31 @@ function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange })
         setPushAnalysis(pushData.analysis);
         drawPushMarkers(pushData.analysis);
       }
+    } catch (error) {
+      console.error('Error fetching pattern and push analysis:', error);
+    }
+  };
 
-      if (predictionRes.ok) {
-        const predData = await predictionRes.json();
+  const generatePrediction = async () => {
+    setPredicting(true);
+    setPredictionGenerated(false);
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/signals/advanced-prediction/${currentSymbol}?timeframe=${currentTimeframe}`,
+        { method: 'POST' }
+      );
+
+      if (response.ok) {
+        const predData = await response.json();
         if (predData.prediction && predData.prediction.predicted_candles) {
           displayPredictionCandles(predData.prediction.predicted_candles);
+          setPredictionGenerated(true);
         }
       }
     } catch (error) {
-      console.error('Error fetching advanced analysis:', error);
+      console.error('Error generating prediction:', error);
+    } finally {
+      setPredicting(false);
     }
   };
 
@@ -222,10 +244,55 @@ function AdvancedChart({ symbol, timeframe, onSymbolChange, onTimeframeChange })
 
   return (
     <div className="advanced-chart-container">
+      <div className="chart-controls">
+        <div className="symbol-controls">
+          <select
+            value={currentSymbol}
+            onChange={(e) => setCurrentSymbol(e.target.value)}
+            className="chart-select"
+          >
+            <option value="EUR/USD">EUR/USD</option>
+            <option value="GBP/USD">GBP/USD</option>
+            <option value="USD/JPY">USD/JPY</option>
+            <option value="BTC">Bitcoin</option>
+            <option value="ETH">Ethereum</option>
+            <option value="SOL">Solana</option>
+          </select>
+
+          <select
+            value={currentTimeframe}
+            onChange={(e) => setCurrentTimeframe(e.target.value)}
+            className="chart-select"
+          >
+            <option value="15m">15 Minutes</option>
+            <option value="1h">1 Hour</option>
+            <option value="4h">4 Hours</option>
+            <option value="1d">1 Day</option>
+          </select>
+        </div>
+
+        <button
+          className="prediction-btn"
+          onClick={generatePrediction}
+          disabled={predicting || loading || chartData.length === 0}
+        >
+          {predicting ? (
+            <>
+              <div className="btn-spinner"></div>
+              Generating...
+            </>
+          ) : predictionGenerated ? (
+            'Regenerate Prediction'
+          ) : (
+            'Generate AI Prediction'
+          )}
+        </button>
+      </div>
+
       {loading && (
         <div className="chart-loading-overlay">
           <div className="loading-spinner"></div>
-          <span>Loading advanced analysis...</span>
+          <span>Loading chart data...</span>
         </div>
       )}
 
