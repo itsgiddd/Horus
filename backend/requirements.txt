@@ -34,3 +34,6 @@ statsmodels==0.14.1
 # Pattern recognition
 ta-lib==0.4.28
 mplfinance==0.12.10b0
+
+# Auto-training scheduler
+schedule==1.2.0

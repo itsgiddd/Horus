@@ -10,6 +10,7 @@ from datetime import datetime
 from api.routes.market_routes import market_bp
 from api.routes.signals_routes import signals_bp
 from api.routes.portfolio_routes import portfolio_bp
+from api.routes.training_routes import training_bp
 
 # Load environment variables
 load_dotenv()
@@ -30,6 +31,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 app.register_blueprint(market_bp, url_prefix='/api/market')
 app.register_blueprint(signals_bp, url_prefix='/api/signals')
 app.register_blueprint(portfolio_bp, url_prefix='/api/portfolio')
+app.register_blueprint(training_bp, url_prefix='/api/training')
 
 # Health check endpoint
 @app.route('/api/health', methods=['GET'])

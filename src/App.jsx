@@ -9,16 +9,22 @@ import RiskManagementView from './components/RiskManagementView';
 import HistoryView from './components/HistoryView';
 import SettingsView from './components/SettingsView';
 import Notifications from './components/Notifications';
+import SetupWizard from './components/SetupWizard';
 import './styles/App.css';
 
 function App() {
   const [currentView, setCurrentView] = useState('dashboard');
   const [notifications, setNotifications] = useState([]);
+  const [showSetup, setShowSetup] = useState(false);
 
-  // Simulate receiving notifications
+  // Check if setup is complete
   useEffect(() => {
-    // Example: Add a welcome notification on mount
-    addNotification('Welcome to HORUS!', 'Your AI-powered trading platform is ready.', 'success');
+    const setupComplete = localStorage.getItem('horus_setup_complete');
+    if (!setupComplete) {
+      setShowSetup(true);
+    } else {
+      addNotification('Welcome to HORUS!', 'Your AI-powered trading platform is ready.', 'success');
+    }
   }, []);
 
   const addNotification = (title, message, type = 'info') => {
@@ -65,6 +71,8 @@ function App() {
 
   return (
     <div className="app">
+      {showSetup && <SetupWizard onComplete={() => setShowSetup(false)} />}
+
       <TitleBar />
       <div className="app-layout">
         <Sidebar currentView={currentView} onViewChange={setCurrentView} />
