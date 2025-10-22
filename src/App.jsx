@@ -1,86 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import TitleBar from './components/TitleBar';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import ChartsView from './components/ChartsView';
-import SignalsView from './components/SignalsView';
-import PortfolioView from './components/PortfolioView';
-import RiskManagementView from './components/RiskManagementView';
-import HistoryView from './components/HistoryView';
+import AdvancedChart from './components/AdvancedChart';
 import SettingsView from './components/SettingsView';
-import Notifications from './components/Notifications';
 import SetupWizard from './components/SetupWizard';
 import './styles/App.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState('dashboard');
-  const [notifications, setNotifications] = useState([]);
+  const [currentView, setCurrentView] = useState('charts');
   const [showSetup, setShowSetup] = useState(false);
 
-  // Check if setup is complete
   useEffect(() => {
     const setupComplete = localStorage.getItem('horus_setup_complete');
     if (!setupComplete) {
       setShowSetup(true);
-    } else {
-      addNotification('Welcome to HORUS!', 'Your AI-powered trading platform is ready.', 'success');
     }
   }, []);
-
-  const addNotification = (title, message, type = 'info') => {
-    const notification = {
-      id: Date.now(),
-      title,
-      message,
-      type, // 'success', 'warning', 'error', 'info'
-      timestamp: new Date(),
-    };
-
-    setNotifications((prev) => [notification, ...prev].slice(0, 5)); // Keep last 5
-
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      removeNotification(notification.id);
-    }, 5000);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
-
-  const renderView = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'charts':
-        return <ChartsView />;
-      case 'signals':
-        return <SignalsView />;
-      case 'portfolio':
-        return <PortfolioView />;
-      case 'risk':
-        return <RiskManagementView />;
-      case 'history':
-        return <HistoryView />;
-      case 'settings':
-        return <SettingsView />;
-      default:
-        return <Dashboard />;
-    }
-  };
 
   return (
     <div className="app">
       {showSetup && <SetupWizard onComplete={() => setShowSetup(false)} />}
 
-      <TitleBar />
-      <div className="app-layout">
-        <Sidebar currentView={currentView} onViewChange={setCurrentView} />
-        <div className="app-content">
-          {renderView()}
+      <div className="app-header">
+        <div className="app-logo">
+          <span className="logo-icon">𓂀</span>
+          <span className="logo-text">HORUS</span>
+        </div>
+
+        <div className="app-nav">
+          <button
+            className={`nav-btn ${currentView === 'charts' ? 'active' : ''}`}
+            onClick={() => setCurrentView('charts')}
+          >
+            Charts
+          </button>
+          <button
+            className={`nav-btn ${currentView === 'settings' ? 'active' : ''}`}
+            onClick={() => setCurrentView('settings')}
+          >
+            Settings
+          </button>
         </div>
       </div>
-      <Notifications notifications={notifications} onRemove={removeNotification} />
+
+      <div className="app-main">
+        {currentView === 'charts' ? (
+          <AdvancedChart />
+        ) : (
+          <SettingsView />
+        )}
+      </div>
     </div>
   );
 }
