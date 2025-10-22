@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import GlassCard from './GlassCard';
+import ExportPanel from './ExportPanel';
 import './SettingsView.css';
 
 function SettingsView() {
@@ -160,6 +161,9 @@ function SettingsView() {
           <button className="save-btn">Save API Keys</button>
         </div>
       </GlassCard>
+
+      {/* Export & Download */}
+      <ExportPanel />
 
       {/* Appearance */}
       <GlassCard variant="strong">
