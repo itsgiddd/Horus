@@ -251,12 +251,46 @@ function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
             onChange={(e) => setCurrentSymbol(e.target.value)}
             className="chart-select"
           >
-            <option value="EUR/USD">EUR/USD</option>
-            <option value="GBP/USD">GBP/USD</option>
-            <option value="USD/JPY">USD/JPY</option>
-            <option value="BTC">Bitcoin</option>
-            <option value="ETH">Ethereum</option>
-            <option value="SOL">Solana</option>
+            <optgroup label="Cryptocurrencies">
+              <option value="BTC">Bitcoin (BTC)</option>
+              <option value="ETH">Ethereum (ETH)</option>
+              <option value="SOL">Solana (SOL)</option>
+            </optgroup>
+            <optgroup label="Major USD Pairs">
+              <option value="EUR/USD">EUR/USD</option>
+              <option value="GBP/USD">GBP/USD</option>
+              <option value="USD/JPY">USD/JPY</option>
+              <option value="AUD/USD">AUD/USD</option>
+              <option value="USD/CAD">USD/CAD</option>
+              <option value="NZD/USD">NZD/USD</option>
+              <option value="USD/CHF">USD/CHF</option>
+            </optgroup>
+            <optgroup label="Exotic USD Pairs">
+              <option value="USD/CNY">USD/CNY (Chinese Yuan)</option>
+              <option value="USD/HKD">USD/HKD (Hong Kong Dollar)</option>
+              <option value="USD/SGD">USD/SGD (Singapore Dollar)</option>
+              <option value="USD/SEK">USD/SEK (Swedish Krona)</option>
+              <option value="USD/NOK">USD/NOK (Norwegian Krone)</option>
+              <option value="USD/DKK">USD/DKK (Danish Krone)</option>
+              <option value="USD/ZAR">USD/ZAR (South African Rand)</option>
+              <option value="USD/MXN">USD/MXN (Mexican Peso)</option>
+              <option value="USD/TRY">USD/TRY (Turkish Lira)</option>
+              <option value="USD/INR">USD/INR (Indian Rupee)</option>
+              <option value="USD/KRW">USD/KRW (South Korean Won)</option>
+              <option value="USD/BRL">USD/BRL (Brazilian Real)</option>
+              <option value="USD/PLN">USD/PLN (Polish Zloty)</option>
+              <option value="USD/THB">USD/THB (Thai Baht)</option>
+              <option value="USD/IDR">USD/IDR (Indonesian Rupiah)</option>
+              <option value="USD/CZK">USD/CZK (Czech Koruna)</option>
+              <option value="USD/HUF">USD/HUF (Hungarian Forint)</option>
+              <option value="USD/ILS">USD/ILS (Israeli Shekel)</option>
+              <option value="USD/CLP">USD/CLP (Chilean Peso)</option>
+              <option value="USD/PHP">USD/PHP (Philippine Peso)</option>
+              <option value="USD/AED">USD/AED (UAE Dirham)</option>
+              <option value="USD/SAR">USD/SAR (Saudi Riyal)</option>
+              <option value="USD/MYR">USD/MYR (Malaysian Ringgit)</option>
+              <option value="USD/RON">USD/RON (Romanian Leu)</option>
+            </optgroup>
           </select>
 
           <select

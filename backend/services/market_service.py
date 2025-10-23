@@ -27,7 +27,15 @@ class MarketService:
 
         # Supported assets
         self.crypto_symbols = self.cryptocompare.crypto_symbols
-        self.forex_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD', 'USD/CHF']
+        self.forex_pairs = [
+            # Major USD pairs
+            'EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD', 'USD/CHF',
+            # Additional USD pairs
+            'USD/CNY', 'USD/HKD', 'USD/SGD', 'USD/SEK', 'USD/NOK', 'USD/DKK',
+            'USD/ZAR', 'USD/MXN', 'USD/TRY', 'USD/INR', 'USD/KRW', 'USD/BRL',
+            'USD/PLN', 'USD/THB', 'USD/IDR', 'USD/CZK', 'USD/HUF', 'USD/ILS',
+            'USD/CLP', 'USD/PHP', 'USD/AED', 'USD/SAR', 'USD/MYR', 'USD/RON'
+        ]
 
         # Cache for price state (for fallback when APIs fail)
         self.price_cache = {}
