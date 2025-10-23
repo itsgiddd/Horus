@@ -135,7 +135,13 @@ PREDICTION_LOOKBACK=60
     };
 
     await simulateInstall();
+
+    // Wait a moment to show 100% completion
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     setInstalling(false);
+    // Automatically advance to next step
+    setCurrentStep(prev => prev + 1);
   };
 
   const handleNext = async () => {
@@ -153,9 +159,10 @@ PREDICTION_LOOKBACK=60
       return;
     }
 
-    // Step 3: Installation simulation
+    // Step 3: Installation simulation (auto-advances when complete)
     if (currentStep === 3) {
       await installDependencies();
+      return; // installDependencies will handle step advancement
     }
 
     // Final step: Complete setup
