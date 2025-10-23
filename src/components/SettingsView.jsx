@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import GlassCard from './GlassCard';
-import ExportPanel from './ExportPanel';
 import './SettingsView.css';
 
 function SettingsView() {
@@ -358,9 +357,6 @@ function SettingsView() {
           </div>
         </div>
       </GlassCard>
-
-      {/* Export & Download */}
-      <ExportPanel />
 
       {/* Appearance */}
       <GlassCard variant="strong">
