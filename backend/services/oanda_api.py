@@ -30,9 +30,17 @@ class OandaAPI:
 
         # Supported forex pairs
         self.forex_pairs = [
+            # Major USD pairs
             'EUR_USD', 'GBP_USD', 'USD_JPY', 'AUD_USD', 'USD_CAD',
-            'NZD_USD', 'USD_CHF', 'EUR_GBP', 'EUR_JPY', 'GBP_JPY',
-            'AUD_JPY', 'EUR_AUD', 'EUR_CAD', 'GBP_AUD', 'GBP_CAD'
+            'NZD_USD', 'USD_CHF',
+            # Additional USD pairs
+            'USD_CNY', 'USD_HKD', 'USD_SGD', 'USD_SEK', 'USD_NOK', 'USD_DKK',
+            'USD_ZAR', 'USD_MXN', 'USD_TRY', 'USD_INR', 'USD_KRW', 'USD_BRL',
+            'USD_PLN', 'USD_THB', 'USD_IDR', 'USD_CZK', 'USD_HUF', 'USD_ILS',
+            'USD_CLP', 'USD_PHP', 'USD_AED', 'USD_SAR', 'USD_MYR', 'USD_RON',
+            # Cross pairs
+            'EUR_GBP', 'EUR_JPY', 'GBP_JPY', 'AUD_JPY', 'EUR_AUD',
+            'EUR_CAD', 'GBP_AUD', 'GBP_CAD'
         ]
 
     def is_configured(self):
