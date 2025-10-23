@@ -311,7 +311,6 @@ PREDICTION_LOOKBACK=60
                     onChange={(e) => handleInputChange('autoTraining', e.target.checked)}
                     className="toggle-input"
                   />
-                  <span className="toggle-slider"></span>
                   <span>Enable Auto-Training (Recommended)</span>
                 </label>
               </div>
