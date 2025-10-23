@@ -31,8 +31,7 @@ mesa==2.1.5
 scipy==1.11.4
 statsmodels==0.14.1
 
-# Pattern recognition
-ta-lib==0.4.28
+# Pattern recognition and charting
 mplfinance==0.12.10b0
 
 # Auto-training scheduler
