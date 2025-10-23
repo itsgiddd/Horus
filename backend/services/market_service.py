@@ -6,6 +6,8 @@ import ta
 import logging
 import random
 import math
+from .oanda_api import OandaAPI
+from .cryptocompare_api import CryptoCompareAPI
 
 logger = logging.getLogger(__name__)
 
@@ -14,14 +16,18 @@ class MarketService:
     """Service for fetching real market data and processing it with AI"""
 
     def __init__(self):
+        # Initialize API clients (optional - self-contained mode works without them)
+        self.oanda = OandaAPI()
+        self.cryptocompare = CryptoCompareAPI()
+
         # API Configuration
         self.crypto_api_key = os.getenv('CRYPTOCOMPARE_API_KEY', 'demo')
         self.coingecko_url = 'https://api.coingecko.com/api/v3'
         self.exchangerate_url = 'https://open.er-api.com/v6'
 
         # Supported assets
-        self.crypto_symbols = ['BTC', 'ETH', 'SOL', 'ADA', 'XRP', 'DOT', 'LINK', 'MATIC', 'AVAX', 'UNI']
-        self.forex_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD']
+        self.crypto_symbols = self.cryptocompare.crypto_symbols
+        self.forex_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD', 'USD/CHF']
 
         # Cache for price state (for fallback when APIs fail)
         self.price_cache = {}
@@ -39,9 +45,23 @@ class MarketService:
             return self._get_cached_price(symbol)
 
     def _get_crypto_price(self, symbol):
-        """Fetch real crypto price from CoinGecko (free API)"""
+        """Fetch crypto price using CryptoCompare API with CoinGecko fallback"""
         try:
-            # Map common symbols to CoinGecko IDs
+            # Try CryptoCompare first
+            if self.cryptocompare.is_configured():
+                price_data = self.cryptocompare.get_price_with_details(symbol)
+                if price_data:
+                    return {
+                        'symbol': symbol,
+                        'price': price_data['price'],
+                        'change_24h': price_data['change_pct_24h'],
+                        'volume_24h': price_data['volume_24h'],
+                        'high_24h': price_data['high_24h'],
+                        'low_24h': price_data['low_24h'],
+                        'timestamp': price_data['timestamp']
+                    }
+
+            # Fallback to CoinGecko
             coin_map = {
                 'BTC': 'bitcoin',
                 'ETH': 'ethereum',
@@ -86,8 +106,23 @@ class MarketService:
         return self._get_cached_price(symbol)
 
     def _get_forex_price(self, pair):
-        """Get real forex price from ExchangeRate API (free)"""
+        """Get forex price using OANDA API with ExchangeRate fallback"""
         try:
+            # Try OANDA first
+            if self.oanda.is_configured():
+                instrument = self.oanda.format_instrument(pair)
+                price_data = self.oanda.get_current_price(instrument)
+                if price_data:
+                    return {
+                        'symbol': pair,
+                        'price': price_data['price'],
+                        'bid': price_data['bid'],
+                        'ask': price_data['ask'],
+                        'spread': price_data['spread'],
+                        'timestamp': price_data['timestamp']
+                    }
+
+            # Fallback to exchangerate API
             base, quote = pair.split('/')
             url = f'{self.exchangerate_url}/latest/{base}'
 
@@ -168,8 +203,25 @@ class MarketService:
             return self._generate_mock_history(symbol, limit, timeframe)
 
     def _get_crypto_historical(self, symbol, timeframe, limit):
-        """Fetch real crypto historical data from CoinGecko"""
+        """Fetch crypto historical data using CryptoCompare API with CoinGecko fallback"""
         try:
+            # Try CryptoCompare first
+            if self.cryptocompare.is_configured():
+                candles = self.cryptocompare.get_historical_data(symbol, timeframe, limit)
+                if candles:
+                    ohlcv = []
+                    for candle in candles:
+                        ohlcv.append({
+                            'timestamp': candle['timestamp'] * 1000,
+                            'open': candle['open'],
+                            'high': candle['high'],
+                            'low': candle['low'],
+                            'close': candle['close'],
+                            'volume': candle.get('volume_to', 0)
+                        })
+                    return ohlcv
+
+            # Fallback to CoinGecko
             coin_map = {
                 'BTC': 'bitcoin',
                 'ETH': 'ethereum',
@@ -241,7 +293,30 @@ class MarketService:
         return self._generate_mock_history(symbol, limit, timeframe)
 
     def _get_forex_historical(self, pair, timeframe, limit):
-        """Generate forex historical data (most free APIs don't provide forex history)"""
+        """Fetch forex historical data using OANDA API with generated fallback"""
+        try:
+            if self.oanda.is_configured():
+                instrument = self.oanda.format_instrument(pair)
+                granularity = self.oanda.convert_granularity(timeframe)
+                candles = self.oanda.get_historical_data(instrument, granularity, limit)
+
+                if candles:
+                    ohlcv = []
+                    for candle in candles:
+                        timestamp_dt = datetime.fromisoformat(candle['timestamp'].replace('Z', '+00:00'))
+                        ohlcv.append({
+                            'timestamp': int(timestamp_dt.timestamp() * 1000),
+                            'open': candle['open'],
+                            'high': candle['high'],
+                            'low': candle['low'],
+                            'close': candle['close'],
+                            'volume': candle['volume']
+                        })
+                    return ohlcv
+        except Exception as e:
+            logger.error(f'Error fetching forex history: {e}')
+
+        # Generate forex historical data (most free APIs don't provide forex history)
         logger.info(f'Generating historical forex data for {pair} (free APIs limited)')
         return self._generate_mock_history(pair, limit, timeframe)
 
