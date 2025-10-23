@@ -4,17 +4,17 @@
   right: 20px;
   z-index: 1000;
   background: linear-gradient(135deg,
-    rgba(25, 25, 40, 0.95) 0%,
-    rgba(30, 30, 50, 0.90) 100%
+    rgba(18, 18, 18, 0.95) 0%,
+    rgba(25, 25, 25, 0.90) 100%
   );
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   border-radius: 12px;
   padding: 12px 20px;
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   min-width: 200px;
 }
 
@@ -71,10 +71,10 @@
 
 .retry-btn {
   padding: 8px 16px;
-  background: linear-gradient(135deg, #8a2be2, #ba55d3);
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
   border: none;
   border-radius: 6px;
-  color: #fff;
+  color: #000;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -84,9 +84,9 @@
 }
 
 .retry-btn:hover {
-  background: linear-gradient(135deg, #9d3ef5, #cd6ae6);
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
 }
 
 .retry-btn:active {
@@ -95,7 +95,7 @@
 
 .error-message {
   font-size: 11px;
-  color: rgba(239, 83, 80, 0.9);
+  color: rgba(180, 180, 180, 0.9);
   line-height: 1.4;
 }
 

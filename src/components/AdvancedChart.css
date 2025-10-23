@@ -7,17 +7,17 @@
   border-radius: 16px;
   overflow: hidden;
   background: linear-gradient(135deg,
-    rgba(20, 20, 35, 0.95) 0%,
-    rgba(30, 30, 50, 0.85) 50%,
-    rgba(20, 20, 35, 0.95) 100%
+    rgba(15, 15, 15, 0.95) 0%,
+    rgba(20, 20, 20, 0.85) 50%,
+    rgba(15, 15, 15, 0.95) 100%
   );
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(138, 43, 226, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 60px rgba(138, 43, 226, 0.05);
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(255, 255, 255, 0.03);
 }
 
 .chart-controls {
@@ -26,8 +26,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 16px 20px;
-  background: rgba(15, 15, 25, 0.6);
-  border-bottom: 1px solid rgba(138, 43, 226, 0.15);
+  background: rgba(8, 8, 8, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   z-index: 50;
 }
 
@@ -53,12 +53,12 @@
 
 .chart-select:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(138, 43, 226, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .chart-select:focus {
-  border-color: #8a2be2;
-  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .chart-select option {
@@ -71,24 +71,24 @@
   align-items: center;
   gap: 8px;
   padding: 12px 32px;
-  background: linear-gradient(135deg, #8a2be2, #ba55d3);
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: #000;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
   white-space: nowrap;
 }
 
 .prediction-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #9d3ef5, #cd6ae6);
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(138, 43, 226, 0.4);
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.4);
 }
 
 .prediction-btn:active:not(:disabled) {
@@ -127,7 +127,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: rgba(15, 15, 25, 0.8);
+  background: rgba(8, 8, 8, 0.8);
   backdrop-filter: blur(20px);
   z-index: 100;
   color: rgba(255, 255, 255, 0.8);
@@ -138,8 +138,8 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(138, 43, 226, 0.2);
-  border-top-color: #8a2be2;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -157,44 +157,44 @@
 
 .push-indicator {
   background: linear-gradient(135deg,
-    rgba(25, 25, 40, 0.95) 0%,
-    rgba(30, 30, 50, 0.90) 100%
+    rgba(18, 18, 18, 0.95) 0%,
+    rgba(25, 25, 25, 0.90) 100%
   );
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   border-radius: 12px;
   padding: 16px 20px;
   min-width: 200px;
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .push-indicator.low {
-  border-color: rgba(38, 166, 154, 0.3);
-  box-shadow: 0 0 20px rgba(38, 166, 154, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .push-indicator.medium {
-  border-color: rgba(255, 193, 7, 0.3);
-  box-shadow: 0 0 20px rgba(255, 193, 7, 0.1);
+  border-color: rgba(220, 220, 220, 0.3);
+  box-shadow: 0 0 20px rgba(220, 220, 220, 0.1);
 }
 
 .push-indicator.high {
-  border-color: rgba(255, 87, 34, 0.3);
-  box-shadow: 0 0 20px rgba(255, 87, 34, 0.1);
+  border-color: rgba(180, 180, 180, 0.4);
+  box-shadow: 0 0 20px rgba(180, 180, 180, 0.15);
 }
 
 .push-indicator.critical {
-  border-color: rgba(239, 83, 80, 0.3);
-  box-shadow: 0 0 20px rgba(239, 83, 80, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   animation: pulse-critical 2s ease-in-out infinite;
 }
 
 @keyframes pulse-critical {
-  0%, 100% { box-shadow: 0 0 20px rgba(239, 83, 80, 0.15); }
-  50% { box-shadow: 0 0 30px rgba(239, 83, 80, 0.3); }
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); }
 }
 
 .push-count {
@@ -216,9 +216,9 @@
 
 .exhaustion-fill {
   height: 100%;
-  background: linear-gradient(90deg, #26a69a 0%, #ffc107 50%, #ef5350 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #e0e0e0 50%, #c0c0c0 100%);
   transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(138, 43, 226, 0.4);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .warning-text {
@@ -234,17 +234,17 @@
   bottom: 20px;
   left: 20px;
   background: linear-gradient(135deg,
-    rgba(25, 25, 40, 0.95) 0%,
-    rgba(30, 30, 50, 0.90) 100%
+    rgba(18, 18, 18, 0.95) 0%,
+    rgba(25, 25, 25, 0.90) 100%
   );
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   border-radius: 12px;
   padding: 16px;
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   z-index: 10;
 }
 
@@ -275,11 +275,11 @@
 }
 
 .pattern-item.bullish {
-  border-left-color: #26a69a;
+  border-left-color: #ffffff;
 }
 
 .pattern-item.bearish {
-  border-left-color: #ef5350;
+  border-left-color: #808080;
 }
 
 .pattern-name {
@@ -293,6 +293,6 @@
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgba(138, 43, 226, 0.15);
-  color: #8a2be2;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }

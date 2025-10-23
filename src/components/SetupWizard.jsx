@@ -139,21 +139,26 @@ PREDICTION_LOOKBACK=60
   };
 
   const handleNext = async () => {
+    // Step 1: API Keys validation (optional, can skip)
     if (currentStep === 1) {
-      const valid = await validateApiKeys();
-      if (!valid) return;
-
+      // Just save config, don't validate (backend might not be running yet)
       await saveConfiguration();
     }
 
+    // Step 2: Training config (no validation needed)
     if (currentStep === 2) {
       await saveConfiguration();
+      // Move to next step immediately
+      setCurrentStep(prev => prev + 1);
+      return;
     }
 
+    // Step 3: Installation simulation
     if (currentStep === 3) {
       await installDependencies();
     }
 
+    // Final step: Complete setup
     if (currentStep === steps.length - 1) {
       if (onComplete) onComplete();
       localStorage.setItem('horus_setup_complete', 'true');

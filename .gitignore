@@ -6,7 +6,11 @@ yarn.lock
 # Build outputs
 dist/
 dist-vite/
-build/
+build/*
+# Allow icon files in build directory
+!build/icon.icns
+!build/icon.ico
+!build/README.md
 *.app
 *.dmg
 *.exe

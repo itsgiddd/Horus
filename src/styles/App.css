@@ -12,11 +12,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg,
-    #0a0a14 0%,
-    #14101e 25%,
-    #1a1525 50%,
-    #14101e 75%,
-    #0a0a14 100%
+    #000000 0%,
+    #0a0a0a 25%,
+    #121212 50%,
+    #0a0a0a 75%,
+    #000000 100%
   );
   color: #fff;
   overflow: hidden;
@@ -37,13 +37,13 @@ body {
   justify-content: space-between;
   padding: 16px 24px;
   background: linear-gradient(135deg,
-    rgba(25, 25, 40, 0.95) 0%,
-    rgba(30, 30, 50, 0.90) 100%
+    rgba(18, 18, 18, 0.95) 0%,
+    rgba(25, 25, 25, 0.90) 100%
   );
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
-  border-bottom: 1px solid rgba(138, 43, 226, 0.2);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   z-index: 100;
 }
 
@@ -63,7 +63,7 @@ body {
   font-weight: 700;
   color: #fff;
   letter-spacing: 2px;
-  text-shadow: 0 2px 8px rgba(138, 43, 226, 0.3);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 }
 
 .app-nav {
@@ -85,15 +85,15 @@ body {
 
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(138, 43, 226, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-btn.active {
-  background: linear-gradient(135deg, #8a2be2, #ba55d3);
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
   border-color: transparent;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+  color: #000;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
 }
 
 .app-main {
@@ -113,9 +113,9 @@ body {
   width: 200%;
   height: 200%;
   background:
-    radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(186, 85, 211, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
   animation: liquidMove 30s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
@@ -142,8 +142,8 @@ body {
   width: 100%;
   height: 100%;
   background-image:
-    linear-gradient(rgba(138, 43, 226, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 43, 226, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
   z-index: 0;
@@ -181,29 +181,29 @@ body {
 }
 
 .app-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(138, 43, 226, 0.4), rgba(186, 85, 211, 0.4));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(200, 200, 200, 0.3));
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
 .app-content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(138, 43, 226, 0.6), rgba(186, 85, 211, 0.6));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(200, 200, 200, 0.5));
 }
 
 /* Liquid glass card styles */
 .glass-card {
   background: linear-gradient(135deg,
-    rgba(25, 25, 40, 0.85) 0%,
-    rgba(30, 30, 50, 0.75) 100%
+    rgba(20, 20, 20, 0.85) 0%,
+    rgba(30, 30, 30, 0.75) 100%
   );
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   border-radius: 16px;
-  border: 1px solid rgba(138, 43, 226, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 40px rgba(138, 43, 226, 0.05);
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 40px rgba(255, 255, 255, 0.03);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -218,18 +218,18 @@ body {
   height: 100%;
   background: linear-gradient(90deg,
     transparent,
-    rgba(138, 43, 226, 0.1),
+    rgba(255, 255, 255, 0.08),
     transparent
   );
   transition: left 0.5s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(138, 43, 226, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 60px rgba(138, 43, 226, 0.1);
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 60px rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
 }
 
@@ -240,26 +240,26 @@ body {
 /* Strong glass variant for emphasized content */
 .glass-card.strong {
   background: linear-gradient(135deg,
-    rgba(30, 30, 50, 0.95) 0%,
-    rgba(35, 35, 60, 0.90) 100%
+    rgba(30, 30, 30, 0.95) 0%,
+    rgba(40, 40, 40, 0.90) 100%
   );
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 12px 48px rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.08),
-    0 0 60px rgba(138, 43, 226, 0.08);
+    0 12px 48px rgba(0, 0, 0, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    0 0 60px rgba(255, 255, 255, 0.06);
 }
 
 /* Liquid button styles */
 .liquid-btn {
   background: linear-gradient(135deg,
-    rgba(138, 43, 226, 0.15),
-    rgba(186, 85, 211, 0.15)
+    rgba(255, 255, 255, 0.1),
+    rgba(200, 200, 200, 0.1)
   );
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(138, 43, 226, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
   padding: 10px 20px;
   color: rgba(255, 255, 255, 0.9);
@@ -279,19 +279,19 @@ body {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(138, 43, 226, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   transform: translate(-50%, -50%);
   transition: width 0.5s ease, height 0.5s ease;
 }
 
 .liquid-btn:hover {
   background: linear-gradient(135deg,
-    rgba(138, 43, 226, 0.25),
-    rgba(186, 85, 211, 0.25)
+    rgba(255, 255, 255, 0.2),
+    rgba(200, 200, 200, 0.2)
   );
-  border-color: rgba(138, 43, 226, 0.5);
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(138, 43, 226, 0.2);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
 }
 
 .liquid-btn:hover::before {
@@ -304,14 +304,15 @@ body {
 }
 
 .liquid-btn.primary {
-  background: linear-gradient(135deg, #8a2be2, #ba55d3);
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
   border-color: transparent;
-  box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);
+  color: #000;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
 }
 
 .liquid-btn.primary:hover {
-  background: linear-gradient(135deg, #9d3ef5, #cd6ae6);
-  box-shadow: 0 8px 24px rgba(138, 43, 226, 0.4);
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.4);
 }
 
 /* Liquid input styles */
@@ -329,9 +330,9 @@ body {
 
 .liquid-input:focus {
   outline: none;
-  border-color: #8a2be2;
+  border-color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .liquid-input::placeholder {
@@ -359,36 +360,36 @@ body {
 }
 
 .status-indicator.success {
-  background: rgba(38, 166, 154, 0.15);
-  border: 1px solid rgba(38, 166, 154, 0.3);
-  color: #26a69a;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 .status-indicator.success::before {
-  background: #26a69a;
-  box-shadow: 0 0 8px rgba(38, 166, 154, 0.6);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .status-indicator.warning {
-  background: rgba(255, 193, 7, 0.15);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  color: #ffc107;
+  background: rgba(180, 180, 180, 0.15);
+  border: 1px solid rgba(180, 180, 180, 0.3);
+  color: #b4b4b4;
 }
 
 .status-indicator.warning::before {
-  background: #ffc107;
-  box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
+  background: #b4b4b4;
+  box-shadow: 0 0 8px rgba(180, 180, 180, 0.6);
 }
 
 .status-indicator.error {
-  background: rgba(239, 83, 80, 0.15);
-  border: 1px solid rgba(239, 83, 80, 0.3);
-  color: #ef5350;
+  background: rgba(100, 100, 100, 0.15);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  color: #646464;
 }
 
 .status-indicator.error::before {
-  background: #ef5350;
-  box-shadow: 0 0 8px rgba(239, 83, 80, 0.6);
+  background: #646464;
+  box-shadow: 0 0 8px rgba(100, 100, 100, 0.6);
 }
 
 @keyframes pulse {
@@ -418,8 +419,8 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(138, 43, 226, 0.2);
-  border-top-color: #8a2be2;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -435,11 +436,11 @@ button, input, select, textarea {
 
 /* Selection styling */
 ::selection {
-  background: rgba(138, 43, 226, 0.4);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.3);
+  color: #000;
 }
 
 ::-moz-selection {
-  background: rgba(138, 43, 226, 0.4);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.3);
+  color: #000;
 }
