@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdvancedChart from './components/AdvancedChart';
 import SettingsView from './components/SettingsView';
 import SetupWizard from './components/SetupWizard';
+import BackendStatus from './components/BackendStatus';
 import './styles/App.css';
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
           <SettingsView />
         )}
       </div>
+
+      <BackendStatus />
     </div>
   );
 }

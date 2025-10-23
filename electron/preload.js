@@ -11,7 +11,20 @@ contextBridge.exposeInMainWorld('electron', {
   // Platform info
   platform: process.platform,
 
-  // API for future Python backend communication
+  // Backend control
+  backend: {
+    start: () => ipcRenderer.send('start-backend'),
+    stop: () => ipcRenderer.send('stop-backend'),
+    check: () => ipcRenderer.send('check-backend'),
+    onStatus: (callback) => {
+      ipcRenderer.on('backend-status', (event, data) => callback(data));
+    },
+    removeListener: () => {
+      ipcRenderer.removeAllListeners('backend-status');
+    },
+  },
+
+  // API for Python backend communication
   api: {
     send: (channel, data) => {
       const validChannels = ['get-signals', 'get-market-data', 'update-settings'];
