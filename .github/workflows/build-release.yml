@@ -16,6 +16,35 @@ on:
         default: 'v1.0.0'
 
 jobs:
+  build-backend:
+    name: Build Backend Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create backend distribution package
+        run: |
+          mkdir -p releases
+          cd backend
+          zip -r ../releases/horus_backend_$(date +%Y%m%d).zip . \
+            -x "__pycache__/*" \
+            -x "*/__pycache__/*" \
+            -x "*/*/__pycache__/*" \
+            -x ".pytest_cache/*" \
+            -x "**/*.pyc" \
+            -x "*.pyc"
+          cd ..
+          ls -lh releases/
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: horus-backend
+          path: releases/horus_backend_*.zip
+          if-no-files-found: error
+
   build:
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -70,7 +99,7 @@ jobs:
 
   release:
     name: Create Release
-    needs: build
+    needs: [build, build-backend]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
 
@@ -90,12 +119,20 @@ jobs:
           name: horus-windows
           path: ./artifacts/windows
 
+      - name: Download Backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: horus-backend
+          path: ./artifacts/backend
+
       - name: List artifacts
         run: |
           echo "Mac artifacts:"
           ls -la ./artifacts/mac/ || echo "No Mac artifacts"
           echo "Windows artifacts:"
           ls -la ./artifacts/windows/ || echo "No Windows artifacts"
+          echo "Backend artifacts:"
+          ls -la ./artifacts/backend/ || echo "No Backend artifacts"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -103,6 +140,7 @@ jobs:
           files: |
             ./artifacts/mac/*
             ./artifacts/windows/*
+            ./artifacts/backend/*
           draft: false
           prerelease: false
           generate_release_notes: true
@@ -111,30 +149,56 @@ jobs:
 
             ## 📦 Downloads
 
-            ### macOS
+            ### Frontend Applications
+
+            **macOS**
             - **HORUS-{version}.dmg** - macOS Installer (recommended)
             - **HORUS-{version}-mac.zip** - macOS Archive
 
-            ### Windows
+            **Windows**
             - **HORUS Setup {version}.exe** - Windows Installer (recommended)
             - **HORUS {version}.exe** - Windows Portable
 
+            ### Backend (Required)
+            - **horus_backend_*.zip** - Python backend with AI/ML components
+              - AI Diffusion Model for price forecasting
+              - Virtual Economy Simulation (100+ trader agents)
+              - Pattern Recognition (18+ chart patterns)
+              - Trading Anarchy 4-Push Detection
+              - OANDA & CryptoCompare API integration
+              - Self-training mechanism
+
             ## ✨ Features
 
-            - 📊 Real-time Portfolio Dashboard
-            - 📈 TradingView Chart Integration
-            - ⚡ AI Trading Signals
-            - 💼 Portfolio Management
-            - 🛡️ Risk Management Analytics
-            - 🔔 Notification System
-            - ⚙️ Customizable Settings
+            - 🤖 AI-Powered Predictions with Diffusion Models
+            - 📊 TradingView Lightweight Charts
+            - 🎯 Pattern Recognition (Double Bottom/Top, H&S, Flags, Pennants, Tea Cup, etc.)
+            - 🔴 Trading Anarchy 4-Push Exhaustion Detection
+            - 💼 Virtual Economy Simulation
+            - 📈 Multi-Indicator Technical Analysis
+            - ⚙️ Liquid Glass TradeLocker-Style UI
 
             ## 🚀 Getting Started
 
-            1. Download the appropriate installer for your platform
-            2. Install the application
-            3. Set up the Python backend (see [backend/README.md](https://github.com/itsgiddd/Horus/blob/main/backend/README.md))
-            4. Launch HORUS and start trading!
+            ### 1. Download Files
+            - Frontend installer for your platform (macOS/Windows)
+            - Backend package (horus_backend_*.zip)
+
+            ### 2. Install Frontend
+            Run the installer for your platform
+
+            ### 3. Setup Backend
+            ```bash
+            unzip horus_backend_*.zip
+            cd backend
+            python3 -m venv venv
+            source venv/bin/activate  # Windows: venv\Scripts\activate
+            pip install -r requirements.txt
+            python app.py
+            ```
+
+            ### 4. Launch HORUS
+            Start the frontend application and begin trading!
 
             ## 📖 Documentation
 
@@ -154,7 +218,7 @@ jobs:
 
   manual-release:
     name: Manual Release
-    needs: build
+    needs: [build, build-backend]
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
 
@@ -174,6 +238,12 @@ jobs:
           name: horus-windows
           path: ./artifacts/windows
 
+      - name: Download Backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: horus-backend
+          path: ./artifacts/backend
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -182,6 +252,7 @@ jobs:
           files: |
             ./artifacts/mac/*
             ./artifacts/windows/*
+            ./artifacts/backend/*
           draft: false
           prerelease: false
           generate_release_notes: true
@@ -190,37 +261,65 @@ jobs:
 
             ## 📦 Downloads
 
-            ### macOS
+            ### Frontend Applications
+
+            **macOS**
             - **HORUS.dmg** - macOS Installer (recommended)
             - **HORUS-mac.zip** - macOS Archive
 
-            ### Windows
+            **Windows**
             - **HORUS Setup.exe** - Windows Installer (recommended)
             - **HORUS.exe** - Windows Portable
 
+            ### Backend Package (Required)
+            - **horus_backend_*.zip** - Complete Python backend
+              - AI Diffusion Model (DDPM) for time series forecasting
+              - Virtual Economy with 100+ simulated trader agents
+              - Pattern Recognition: 18+ patterns (H&S, Flags, Tea Cup, etc.)
+              - Trading Anarchy 4-Push Exhaustion Detection
+              - OANDA API (forex) & CryptoCompare API (crypto)
+              - Self-training mechanism with automatic retraining
+              - Export/download functionality for models
+
             ## ✨ Features
 
-            - 📊 Real-time Portfolio Dashboard with P&L tracking
-            - 📈 TradingView Chart Integration with multiple timeframes
-            - ⚡ AI Trading Signals with confidence scoring
-            - 💼 Portfolio Management with performance analytics
-            - 🛡️ Advanced Risk Management (VaR, Sharpe Ratio, Diversification)
-            - 🔔 Desktop Notification System
-            - ⚙️ Customizable Settings and API Configuration
+            - 🤖 **AI Diffusion Model** - Advanced DDPM for price predictions
+            - 🎯 **Pattern Recognition** - 18+ chart patterns with confidence scoring
+            - 🔴 **Trading Anarchy** - 4-push exhaustion detection system
+            - 🏛️ **Virtual Economy** - 100+ agent simulation for scenario analysis
+            - 📊 **TradingView Charts** - Professional lightweight charts
+            - 💎 **Liquid Glass UI** - TradeLocker-style modern interface
+            - 📈 **Multi-Indicator Analysis** - RSI, MACD, BB, Stochastic, ATR
+            - ⚙️ **Dual Mode** - Self-contained or live API trading
 
             ## 🚀 Quick Start
 
-            1. **Download** the installer for your platform
-            2. **Install** the application
-            3. **Set up Backend** (required):
-               ```bash
-               cd backend
-               python3 -m venv venv
-               source venv/bin/activate  # Windows: venv\Scripts\activate
-               pip install -r requirements.txt
-               python app.py
-               ```
-            4. **Launch HORUS** and start trading!
+            ### 1. Download
+            - Frontend installer for your OS
+            - Backend package (horus_backend_*.zip)
+
+            ### 2. Install Frontend
+            Run the installer for your platform
+
+            ### 3. Setup Backend
+            ```bash
+            unzip horus_backend_*.zip
+            cd backend
+            python3 -m venv venv
+            source venv/bin/activate  # Windows: venv\Scripts\activate
+            pip install -r requirements.txt
+            python app.py
+            ```
+
+            ### 4. Configure (Optional)
+            For live trading, edit `backend/.env`:
+            - Add OANDA_API_KEY for forex
+            - Add CRYPTOCOMPARE_API_KEY for crypto
+
+            (Backend works without API keys in self-contained mode)
+
+            ### 5. Launch
+            Start HORUS and begin trading!
 
             ## 📖 Documentation
 
