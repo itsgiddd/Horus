@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GlassCard from './GlassCard';
 import ExportPanel from './ExportPanel';
 import './SettingsView.css';
@@ -14,6 +14,125 @@ function SettingsView() {
     theme: 'dark',
     language: 'en',
   });
+
+  const [apiKeys, setApiKeys] = useState({
+    cryptocompareApiKey: '',
+    oandaApiKey: '',
+    oandaAccountId: '',
+    oandaEnvironment: 'practice',
+  });
+
+  const [apiStatus, setApiStatus] = useState({
+    saving: false,
+    testing: false,
+    message: '',
+    type: '', // 'success', 'error', 'info'
+  });
+
+  // Load current API configuration on mount
+  useEffect(() => {
+    loadApiConfig();
+  }, []);
+
+  const loadApiConfig = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/config/api-keys');
+      if (response.ok) {
+        const data = await response.json();
+        setApiKeys({
+          cryptocompareApiKey: data.cryptocompare_configured ? '••••••••' : '',
+          oandaApiKey: data.oanda_configured ? '••••••••' : '',
+          oandaAccountId: data.oanda_account_id || '',
+          oandaEnvironment: data.oanda_environment || 'practice',
+        });
+      }
+    } catch (error) {
+      console.error('Error loading API config:', error);
+    }
+  };
+
+  const handleApiKeyChange = (key, value) => {
+    setApiKeys((prev) => ({ ...prev, [key]: value }));
+    setApiStatus({ saving: false, testing: false, message: '', type: '' });
+  };
+
+  const saveApiKeys = async () => {
+    setApiStatus({ saving: true, testing: false, message: 'Saving API keys...', type: 'info' });
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/config/api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cryptocompare_api_key: apiKeys.cryptocompareApiKey,
+          oanda_api_key: apiKeys.oandaApiKey,
+          oanda_account_id: apiKeys.oandaAccountId,
+          oanda_environment: apiKeys.oandaEnvironment,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setApiStatus({
+          saving: false,
+          testing: false,
+          message: 'API keys saved successfully! Restart the backend to use them.',
+          type: 'success'
+        });
+        // Reload to show masked keys
+        setTimeout(() => loadApiConfig(), 1000);
+      } else {
+        throw new Error('Failed to save API keys');
+      }
+    } catch (error) {
+      setApiStatus({
+        saving: false,
+        testing: false,
+        message: 'Error saving API keys. Please try again.',
+        type: 'error'
+      });
+    }
+  };
+
+  const testApiKeys = async () => {
+    setApiStatus({ saving: false, testing: true, message: 'Testing API connections...', type: 'info' });
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/config/test-api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cryptocompare_api_key: apiKeys.cryptocompareApiKey,
+          oanda_api_key: apiKeys.oandaApiKey,
+          oanda_account_id: apiKeys.oandaAccountId,
+          oanda_environment: apiKeys.oandaEnvironment,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        let message = 'Test Results:\n';
+        message += data.oanda_status ? '✓ OANDA: Connected\n' : '✗ OANDA: Failed\n';
+        message += data.cryptocompare_status ? '✓ CryptoCompare: Connected' : '✗ CryptoCompare: Failed';
+
+        setApiStatus({
+          saving: false,
+          testing: false,
+          message: message,
+          type: data.oanda_status || data.cryptocompare_status ? 'success' : 'error'
+        });
+      } else {
+        throw new Error('Failed to test API keys');
+      }
+    } catch (error) {
+      setApiStatus({
+        saving: false,
+        testing: false,
+        message: 'Error testing API keys. Make sure backend is running.',
+        type: 'error'
+      });
+    }
+  };
 
   const handleToggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -142,23 +261,101 @@ function SettingsView() {
       {/* API Configuration */}
       <GlassCard variant="strong">
         <h3>API Configuration</h3>
+        <p className="section-info">
+          Configure your API keys to access real-time market data. All keys are stored securely and never shared.
+        </p>
+
         <div className="settings-section">
           <div className="api-setting">
-            <label>CryptoCompare API Key</label>
-            <input type="password" placeholder="Enter API key" className="api-input" />
+            <label>
+              CryptoCompare API Key
+              <a href="https://min-api.cryptocompare.com/" target="_blank" rel="noopener noreferrer" className="api-link">
+                Get Free API Key →
+              </a>
+            </label>
+            <input
+              type={apiKeys.cryptocompareApiKey === '••••••••' ? 'password' : 'text'}
+              placeholder="Enter your CryptoCompare API key"
+              className="api-input"
+              value={apiKeys.cryptocompareApiKey}
+              onChange={(e) => handleApiKeyChange('cryptocompareApiKey', e.target.value)}
+            />
+            <span className="api-description">For Bitcoin, Ethereum, and other cryptocurrency data</span>
           </div>
 
           <div className="api-setting">
-            <label>OANDA API Key</label>
-            <input type="password" placeholder="Enter API key" className="api-input" />
+            <label>
+              OANDA API Key
+              <a href="https://www.oanda.com/account/tpa/personal_token" target="_blank" rel="noopener noreferrer" className="api-link">
+                Get Free API Key →
+              </a>
+            </label>
+            <input
+              type={apiKeys.oandaApiKey === '••••••••' ? 'password' : 'text'}
+              placeholder="Enter your OANDA API token"
+              className="api-input"
+              value={apiKeys.oandaApiKey}
+              onChange={(e) => handleApiKeyChange('oandaApiKey', e.target.value)}
+            />
+            <span className="api-description">For forex pairs data (EUR/USD, GBP/USD, etc.)</span>
           </div>
 
           <div className="api-setting">
             <label>OANDA Account ID</label>
-            <input type="text" placeholder="Enter account ID" className="api-input" />
+            <input
+              type="text"
+              placeholder="XXX-XXX-XXXXXXXX-XXX"
+              className="api-input"
+              value={apiKeys.oandaAccountId}
+              onChange={(e) => handleApiKeyChange('oandaAccountId', e.target.value)}
+            />
+            <span className="api-description">Found in your OANDA account dashboard</span>
           </div>
 
-          <button className="save-btn">Save API Keys</button>
+          <div className="api-setting">
+            <label>OANDA Environment</label>
+            <select
+              value={apiKeys.oandaEnvironment}
+              onChange={(e) => handleApiKeyChange('oandaEnvironment', e.target.value)}
+              className="glass-select"
+            >
+              <option value="practice">Practice (Demo Account - Free)</option>
+              <option value="live">Live (Real Money Trading)</option>
+            </select>
+            <span className="api-description">
+              Use "Practice" for testing with fake money, "Live" for real trading
+            </span>
+          </div>
+
+          {apiStatus.message && (
+            <div className={`api-status-message ${apiStatus.type}`}>
+              {apiStatus.message.split('\n').map((line, idx) => (
+                <div key={idx}>{line}</div>
+              ))}
+            </div>
+          )}
+
+          <div className="api-buttons">
+            <button
+              className="save-btn secondary"
+              onClick={testApiKeys}
+              disabled={apiStatus.testing || apiStatus.saving}
+            >
+              {apiStatus.testing ? 'Testing...' : 'Test Connection'}
+            </button>
+            <button
+              className="save-btn primary"
+              onClick={saveApiKeys}
+              disabled={apiStatus.saving || apiStatus.testing}
+            >
+              {apiStatus.saving ? 'Saving...' : 'Save API Keys'}
+            </button>
+          </div>
+
+          <div className="api-info-box">
+            <strong>💡 Note:</strong> API keys are optional. HORUS works without them using simulated data.
+            Add your API keys to access real historical candles and live market data.
+          </div>
         </div>
       </GlassCard>
 

@@ -12,6 +12,7 @@ from api.routes.signals_routes import signals_bp
 from api.routes.portfolio_routes import portfolio_bp
 from api.routes.training_routes import training_bp
 from api.routes.export_routes import export_bp
+from api.routes.config_routes import config_bp
 
 # Load environment variables
 load_dotenv()
@@ -34,6 +35,7 @@ app.register_blueprint(signals_bp, url_prefix='/api/signals')
 app.register_blueprint(portfolio_bp, url_prefix='/api/portfolio')
 app.register_blueprint(training_bp, url_prefix='/api/training')
 app.register_blueprint(export_bp, url_prefix='/api/export')
+app.register_blueprint(config_bp, url_prefix='/api/config')
 
 # Health check endpoint
 @app.route('/api/health', methods=['GET'])
