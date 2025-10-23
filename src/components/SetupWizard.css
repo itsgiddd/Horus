@@ -285,6 +285,7 @@
   cursor: pointer;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
+  user-select: none;
 }
 
 .toggle-input {
@@ -292,16 +293,25 @@
   width: 48px;
   height: 24px;
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   outline: none;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.toggle-input:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .toggle-input:checked {
   background: #ffffff;
+  border-color: #ffffff;
 }
 
 .toggle-input::before {
@@ -310,15 +320,24 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  top: 2px;
-  left: 2px;
+  top: 1px;
+  left: 1px;
   background: #fff;
-  transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .toggle-input:checked::before {
-  left: 26px;
+  left: 25px;
   background: #000;
+}
+
+.toggle-input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.toggle-input:active::before {
+  width: 24px;
 }
 
 .training-info {
