@@ -100,10 +100,7 @@ body {
 }
 
 .nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  padding: 10px 24px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -135,11 +132,6 @@ body {
 
 .nav-btn.active:hover {
   box-shadow: 0 6px 20px rgba(138, 43, 226, 0.5);
-}
-
-.nav-icon {
-  font-size: 18px;
-  line-height: 1;
 }
 
 .app-main {

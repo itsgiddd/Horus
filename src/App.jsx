@@ -33,16 +33,14 @@ function App() {
             onClick={() => setCurrentView('charts')}
             aria-label="View Charts"
           >
-            <span className="nav-icon">📊</span>
-            <span>Charts</span>
+            Charts
           </button>
           <button
             className={`nav-btn ${currentView === 'settings' ? 'active' : ''}`}
             onClick={() => setCurrentView('settings')}
             aria-label="View Settings"
           >
-            <span className="nav-icon">⚙️</span>
-            <span>Settings</span>
+            Settings
           </button>
         </nav>
       </div>

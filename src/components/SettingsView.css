@@ -4,17 +4,122 @@
   gap: 20px;
   height: 100%;
   overflow-y: auto;
-  max-width: 900px;
+  max-width: 1200px;
+  width: 100%;
+  padding-right: 8px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 16px;
 }
 
 .settings-header h2 {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
-  background: var(--gradient-accent);
+  background: linear-gradient(135deg, #ffffff 0%, #8a2be2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Save All Button */
+.save-all-btn {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #8a2be2 0%, #6a1bb2 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(138, 43, 226, 0.4);
+  white-space: nowrap;
+}
+
+.save-all-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(138, 43, 226, 0.5);
+}
+
+.save-all-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.save-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Global Status Message */
+.global-status-message {
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  margin-bottom: 20px;
+  border: 1px solid;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.global-status-message.success {
+  background: rgba(138, 43, 226, 0.15);
+  border-color: rgba(138, 43, 226, 0.4);
+  color: #ffffff;
+}
+
+.global-status-message.error {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.global-status-message.info {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Bottom Save Container */
+.bottom-save-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.save-all-btn.bottom {
+  min-width: 250px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .save-all-btn {
+    width: 100%;
+  }
 }
 
 .settings-section {
@@ -32,10 +137,43 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   gap: 20px;
+  min-height: 60px;
 }
 
 .setting-info {
   flex: 1;
+  min-width: 0; /* Allow text to wrap/truncate properly */
+}
+
+/* Responsive: Stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .setting-info {
+    width: 100%;
+  }
+
+  .toggle-switch,
+  .slider,
+  .glass-select {
+    align-self: flex-end;
+  }
+}
+
+/* Additional breakpoint for very narrow containers */
+@media (max-width: 600px) {
+  .setting-item {
+    padding: 12px;
+  }
+
+  .slider {
+    width: 100%;
+    max-width: none;
+  }
 }
 
 .setting-label {
@@ -49,6 +187,32 @@
   font-size: 12px;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+/* Select Dropdown */
+.glass-select {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.glass-select:focus {
+  outline: none;
+  border-color: rgba(138, 43, 226, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+}
+
+.glass-select option {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px;
 }
 
 /* Toggle Switch */
@@ -332,6 +496,18 @@ input:checked + .toggle-slider:before {
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Responsive buttons */
+@media (max-width: 600px) {
+  .api-buttons {
+    flex-direction: column;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
 }
 
 .save-btn.secondary {

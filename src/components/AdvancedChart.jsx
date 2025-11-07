@@ -355,15 +355,9 @@ function AdvancedChart() {
               Generating...
             </>
           ) : predictionGenerated ? (
-            <>
-              <span>🔄</span>
-              Regenerate Prediction
-            </>
+            'Regenerate Prediction'
           ) : (
-            <>
-              <span>🤖</span>
-              Generate AI Prediction
-            </>
+            'Generate AI Prediction'
           )}
         </button>
       </div>
