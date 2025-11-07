@@ -1,21 +1,46 @@
-import React, { useState, useEffect, useRef } from 'react';
+/**
+ * Advanced Chart Component
+ * Professional chart with AI predictions, pattern detection, and push analysis
+ */
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createChart } from 'lightweight-charts';
+import { useApp } from '../contexts/AppContext';
+import { useToast } from '../contexts/ToastContext';
+import api, { handleAPIError } from '../services/api';
+import { ChartSkeleton } from './LoadingSkeleton';
+import { CHART_CONFIG, TRADING_PAIRS, TIMEFRAMES, UI, SUCCESS_MESSAGES } from '../config/constants';
+import { truncate } from '../utils/helpers';
 import './AdvancedChart.css';
 
-function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
+function AdvancedChart() {
+  // Refs
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const predictionSeriesRef = useRef(null);
 
-  const [currentSymbol, setCurrentSymbol] = useState(symbol);
-  const [currentTimeframe, setCurrentTimeframe] = useState(timeframe);
+  // Context hooks
+  const {
+    selectedSymbol,
+    selectedTimeframe,
+    updateSymbol,
+    updateTimeframe,
+    patterns,
+    updatePatterns,
+    pushAnalysis,
+    updatePushAnalysis,
+    predictionData,
+    updatePrediction,
+    isPredicting,
+    setIsPredicting,
+  } = useApp();
+
+  const toast = useToast();
+
+  // Local state
   const [chartData, setChartData] = useState([]);
-  const [predictionCandles, setPredictionCandles] = useState([]);
-  const [patterns, setPatterns] = useState([]);
-  const [pushAnalysis, setPushAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [predicting, setPredicting] = useState(false);
   const [predictionGenerated, setPredictionGenerated] = useState(false);
 
   useEffect(() => {
@@ -96,24 +121,31 @@ function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
     };
   }, []);
 
+  // Fetch market data
   useEffect(() => {
     fetchMarketData();
-  }, [currentSymbol, currentTimeframe]);
+  }, [selectedSymbol, selectedTimeframe]);
 
-  const fetchMarketData = async () => {
+  /**
+   * Fetch market data with professional error handling
+   */
+  const fetchMarketData = useCallback(async () => {
     setLoading(true);
     setPredictionGenerated(false);
-    setPredictionCandles([]);
+    updatePrediction(null);
+
     if (predictionSeriesRef.current) {
       predictionSeriesRef.current.setData([]);
     }
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/market/history/${currentSymbol}?timeframe=${currentTimeframe}&limit=200`
-      );
-      const data = await response.json();
 
-      if (data.history) {
+    try {
+      const data = await api.getHistoricalData(
+        selectedSymbol,
+        selectedTimeframe,
+        CHART_CONFIG.DEFAULT_CANDLE_LIMIT
+      );
+
+      if (data?.history && Array.isArray(data.history)) {
         const formattedData = data.history.map(candle => ({
           time: candle.timestamp / 1000,
           open: candle.open,
@@ -127,103 +159,122 @@ function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
           candleSeriesRef.current.setData(formattedData);
         }
 
+        // Fetch patterns and push analysis in parallel
         fetchPatternAndPushAnalysis();
       }
     } catch (error) {
-      console.error('Error fetching market data:', error);
+      const errorInfo = handleAPIError(error);
+      toast.error(errorInfo.message);
+      console.error('Market data fetch error:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedSymbol, selectedTimeframe, toast, updatePrediction]);
 
-  const fetchPatternAndPushAnalysis = async () => {
+  /**
+   * Fetch pattern and push analysis in parallel
+   */
+  const fetchPatternAndPushAnalysis = useCallback(async () => {
     try {
-      const [patternsRes, pushRes] = await Promise.all([
-        fetch(`http://127.0.0.1:5000/api/signals/patterns/${currentSymbol}?timeframe=${currentTimeframe}`),
-        fetch(`http://127.0.0.1:5000/api/signals/push-analysis/${currentSymbol}?timeframe=${currentTimeframe}`),
-      ]);
+      const { patterns: patternsData, pushAnalysis: pushData } = await api.getAllSignals(
+        selectedSymbol,
+        selectedTimeframe
+      );
 
-      if (patternsRes.ok) {
-        const patternsData = await patternsRes.json();
-        setPatterns(patternsData.patterns || []);
-        drawPatternMarkers(patternsData.patterns || []);
+      if (patternsData?.patterns) {
+        updatePatterns(patternsData.patterns);
+        drawPatternMarkers(patternsData.patterns);
       }
 
-      if (pushRes.ok) {
-        const pushData = await pushRes.json();
-        setPushAnalysis(pushData.analysis);
+      if (pushData?.analysis) {
+        updatePushAnalysis(pushData.analysis);
         drawPushMarkers(pushData.analysis);
       }
     } catch (error) {
-      console.error('Error fetching pattern and push analysis:', error);
+      console.error('Error fetching signals:', error);
+      // Don't show toast for signals - they're supplementary data
     }
-  };
+  }, [selectedSymbol, selectedTimeframe, updatePatterns, updatePushAnalysis]);
 
-  const generatePrediction = async () => {
-    setPredicting(true);
+  /**
+   * Generate AI prediction with professional error handling
+   */
+  const generatePrediction = useCallback(async () => {
+    setIsPredicting(true);
     setPredictionGenerated(false);
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/signals/advanced-prediction/${currentSymbol}?timeframe=${currentTimeframe}`,
-        { method: 'POST' }
-      );
 
-      if (response.ok) {
-        const predData = await response.json();
-        if (predData.prediction && predData.prediction.predicted_candles) {
+    try {
+      const predData = await api.getAdvancedPrediction(selectedSymbol, selectedTimeframe);
+
+      if (predData?.prediction) {
+        updatePrediction(predData.prediction);
+
+        if (predData.prediction.predicted_candles) {
           displayPredictionCandles(predData.prediction.predicted_candles);
           setPredictionGenerated(true);
+          toast.success(SUCCESS_MESSAGES.PREDICTION_GENERATED);
         }
       }
     } catch (error) {
-      console.error('Error generating prediction:', error);
+      const errorInfo = handleAPIError(error);
+      toast.error(errorInfo.message);
+      console.error('Prediction generation error:', error);
     } finally {
-      setPredicting(false);
+      setIsPredicting(false);
     }
-  };
+  }, [selectedSymbol, selectedTimeframe, setIsPredicting, updatePrediction, toast]);
 
-  const drawPatternMarkers = (patterns) => {
-    if (!chartRef.current || !patterns.length) return;
+  /**
+   * Draw pattern markers on chart
+   */
+  const drawPatternMarkers = useCallback((patterns) => {
+    if (!chartRef.current || !patterns.length || !chartData.length) return;
 
-    patterns.slice(0, 5).forEach((pattern, idx) => {
+    patterns.slice(0, 5).forEach((pattern) => {
       const marker = {
-        time: chartData[chartData.length - 1]?.time || Date.now() / 1000,
+        time: chartData[chartData.length - 1].time,
         position: pattern.bias === 'Bullish' ? 'belowBar' : 'aboveBar',
-        color: pattern.bias === 'Bullish' ? '#26a69a' : '#ef5350',
+        color: pattern.bias === 'Bullish' ? CHART_CONFIG.THEME.UP_COLOR : CHART_CONFIG.THEME.DOWN_COLOR,
         shape: 'circle',
-        text: pattern.type.substring(0, 15),
+        text: truncate(pattern.type, UI.MAX_PATTERN_NAME_LENGTH),
       };
 
       if (candleSeriesRef.current) {
-        const existingMarkers = candleSeriesRef.current.markers();
+        const existingMarkers = candleSeriesRef.current.markers() || [];
         candleSeriesRef.current.setMarkers([...existingMarkers, marker]);
       }
     });
-  };
+  }, [chartData]);
 
-  const drawPushMarkers = (analysis) => {
-    if (!chartRef.current || !analysis || !analysis.push_details) return;
+  /**
+   * Draw push markers on chart
+   */
+  const drawPushMarkers = useCallback((analysis) => {
+    if (!chartRef.current || !analysis || !analysis.push_details || !chartData.length) return;
 
     analysis.push_details.forEach((push, idx) => {
       if (idx < chartData.length) {
         const marker = {
-          time: chartData[Math.min(push.end_idx || idx, chartData.length - 1)]?.time || Date.now() / 1000,
+          time: chartData[Math.min(push.end_idx || idx, chartData.length - 1)].time,
           position: push.direction === 'bullish' ? 'belowBar' : 'aboveBar',
-          color: '#8a2be2',
+          color: CHART_CONFIG.THEME.ACCENT_COLOR,
           shape: 'arrowUp',
           text: `Push ${idx + 1}`,
         };
 
         if (candleSeriesRef.current) {
-          const existingMarkers = candleSeriesRef.current.markers();
+          const existingMarkers = candleSeriesRef.current.markers() || [];
           candleSeriesRef.current.setMarkers([...existingMarkers, marker]);
         }
       }
     });
-  };
+  }, [chartData]);
 
-  const displayPredictionCandles = (candles) => {
-    if (!predictionSeriesRef.current || !chartData.length) return;
+  /**
+   * Display prediction candles on chart
+   */
+  const displayPredictionCandles = useCallback((candles) => {
+    if (!predictionSeriesRef.current || !chartData.length || !candles?.length) return;
 
     const lastTime = chartData[chartData.length - 1].time;
     const timeInterval = chartData.length > 1
@@ -238,87 +289,81 @@ function AdvancedChart({ symbol = 'EUR/USD', timeframe = '1h' }) {
       close: candle.close,
     }));
 
-    setPredictionCandles(predictionData);
     predictionSeriesRef.current.setData(predictionData);
-  };
+  }, [chartData]);
+
+  // Show loading skeleton
+  if (loading && chartData.length === 0) {
+    return <ChartSkeleton />;
+  }
 
   return (
     <div className="advanced-chart-container">
       <div className="chart-controls">
         <div className="symbol-controls">
           <select
-            value={currentSymbol}
-            onChange={(e) => setCurrentSymbol(e.target.value)}
+            value={selectedSymbol}
+            onChange={(e) => updateSymbol(e.target.value)}
             className="chart-select"
+            disabled={loading || isPredicting}
           >
             <optgroup label="Cryptocurrencies">
-              <option value="BTC">Bitcoin (BTC)</option>
-              <option value="ETH">Ethereum (ETH)</option>
-              <option value="SOL">Solana (SOL)</option>
+              {TRADING_PAIRS.CRYPTO.map((pair) => (
+                <option key={pair.value} value={pair.value}>
+                  {pair.label}
+                </option>
+              ))}
             </optgroup>
             <optgroup label="Major USD Pairs">
-              <option value="EUR/USD">EUR/USD</option>
-              <option value="GBP/USD">GBP/USD</option>
-              <option value="USD/JPY">USD/JPY</option>
-              <option value="AUD/USD">AUD/USD</option>
-              <option value="USD/CAD">USD/CAD</option>
-              <option value="NZD/USD">NZD/USD</option>
-              <option value="USD/CHF">USD/CHF</option>
+              {TRADING_PAIRS.FOREX_MAJOR.map((pair) => (
+                <option key={pair.value} value={pair.value}>
+                  {pair.label}
+                </option>
+              ))}
             </optgroup>
             <optgroup label="Exotic USD Pairs">
-              <option value="USD/CNY">USD/CNY (Chinese Yuan)</option>
-              <option value="USD/HKD">USD/HKD (Hong Kong Dollar)</option>
-              <option value="USD/SGD">USD/SGD (Singapore Dollar)</option>
-              <option value="USD/SEK">USD/SEK (Swedish Krona)</option>
-              <option value="USD/NOK">USD/NOK (Norwegian Krone)</option>
-              <option value="USD/DKK">USD/DKK (Danish Krone)</option>
-              <option value="USD/ZAR">USD/ZAR (South African Rand)</option>
-              <option value="USD/MXN">USD/MXN (Mexican Peso)</option>
-              <option value="USD/TRY">USD/TRY (Turkish Lira)</option>
-              <option value="USD/INR">USD/INR (Indian Rupee)</option>
-              <option value="USD/KRW">USD/KRW (South Korean Won)</option>
-              <option value="USD/BRL">USD/BRL (Brazilian Real)</option>
-              <option value="USD/PLN">USD/PLN (Polish Zloty)</option>
-              <option value="USD/THB">USD/THB (Thai Baht)</option>
-              <option value="USD/IDR">USD/IDR (Indonesian Rupiah)</option>
-              <option value="USD/CZK">USD/CZK (Czech Koruna)</option>
-              <option value="USD/HUF">USD/HUF (Hungarian Forint)</option>
-              <option value="USD/ILS">USD/ILS (Israeli Shekel)</option>
-              <option value="USD/CLP">USD/CLP (Chilean Peso)</option>
-              <option value="USD/PHP">USD/PHP (Philippine Peso)</option>
-              <option value="USD/AED">USD/AED (UAE Dirham)</option>
-              <option value="USD/SAR">USD/SAR (Saudi Riyal)</option>
-              <option value="USD/MYR">USD/MYR (Malaysian Ringgit)</option>
-              <option value="USD/RON">USD/RON (Romanian Leu)</option>
+              {TRADING_PAIRS.FOREX_EXOTIC.map((pair) => (
+                <option key={pair.value} value={pair.value}>
+                  {pair.label}
+                </option>
+              ))}
             </optgroup>
           </select>
 
           <select
-            value={currentTimeframe}
-            onChange={(e) => setCurrentTimeframe(e.target.value)}
+            value={selectedTimeframe}
+            onChange={(e) => updateTimeframe(e.target.value)}
             className="chart-select"
+            disabled={loading || isPredicting}
           >
-            <option value="15m">15 Minutes</option>
-            <option value="1h">1 Hour</option>
-            <option value="4h">4 Hours</option>
-            <option value="1d">1 Day</option>
+            {TIMEFRAMES.map((tf) => (
+              <option key={tf.value} value={tf.value}>
+                {tf.label}
+              </option>
+            ))}
           </select>
         </div>
 
         <button
           className="prediction-btn"
           onClick={generatePrediction}
-          disabled={predicting || loading || chartData.length === 0}
+          disabled={isPredicting || loading || chartData.length === 0}
         >
-          {predicting ? (
+          {isPredicting ? (
             <>
               <div className="btn-spinner"></div>
               Generating...
             </>
           ) : predictionGenerated ? (
-            'Regenerate Prediction'
+            <>
+              <span>🔄</span>
+              Regenerate Prediction
+            </>
           ) : (
-            'Generate AI Prediction'
+            <>
+              <span>🤖</span>
+              Generate AI Prediction
+            </>
           )}
         </button>
       </div>
