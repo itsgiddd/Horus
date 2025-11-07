@@ -211,7 +211,7 @@ This is a proprietary project. See [TERMS_OF_SERVICE.md](TERMS_OF_SERVICE.md) fo
 
 ## 📬 Contact
 
-Created by [@itsgiddd](https://github.com/itsgiddd) • Questions? Open an issue!
+Created by [@itsgiddd](https://github.com/itsgiddd) • Questions? Open an issue! **STILL IN BETA**
 
 ---
 
