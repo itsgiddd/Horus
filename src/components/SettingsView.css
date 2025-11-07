@@ -9,14 +9,117 @@
   padding-right: 8px;
 }
 
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 16px;
+}
+
 .settings-header h2 {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
-  background: var(--gradient-accent);
+  background: linear-gradient(135deg, #ffffff 0%, #8a2be2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Save All Button */
+.save-all-btn {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #8a2be2 0%, #6a1bb2 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(138, 43, 226, 0.4);
+  white-space: nowrap;
+}
+
+.save-all-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(138, 43, 226, 0.5);
+}
+
+.save-all-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.save-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Global Status Message */
+.global-status-message {
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  margin-bottom: 20px;
+  border: 1px solid;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.global-status-message.success {
+  background: rgba(138, 43, 226, 0.15);
+  border-color: rgba(138, 43, 226, 0.4);
+  color: #ffffff;
+}
+
+.global-status-message.error {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.global-status-message.info {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Bottom Save Container */
+.bottom-save-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.save-all-btn.bottom {
+  min-width: 250px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .save-all-btn {
+    width: 100%;
+  }
 }
 
 .settings-section {

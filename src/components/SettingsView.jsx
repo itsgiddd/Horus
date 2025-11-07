@@ -145,11 +145,86 @@ function SettingsView() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Save all settings including API keys
+  const saveAllSettings = async () => {
+    setApiStatus({ saving: true, testing: false, message: 'Saving all settings...', type: 'info' });
+
+    try {
+      // Save API keys to backend .env file
+      const response = await fetch('http://127.0.0.1:5000/api/config/api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cryptocompare_api_key: apiKeys.cryptocompareApiKey,
+          oanda_api_key: apiKeys.oandaApiKey,
+          oanda_account_id: apiKeys.oandaAccountId,
+          oanda_environment: apiKeys.oandaEnvironment,
+        }),
+      });
+
+      if (response.ok) {
+        // Save general settings to localStorage
+        localStorage.setItem('horus_settings', JSON.stringify(settings));
+
+        setApiStatus({
+          saving: false,
+          testing: false,
+          message: 'All settings saved successfully! Restart the backend to apply API key changes.',
+          type: 'success'
+        });
+
+        // Reload to show masked keys
+        setTimeout(() => {
+          loadApiConfig();
+          setApiStatus({ saving: false, testing: false, message: '', type: '' });
+        }, 3000);
+      } else {
+        throw new Error('Failed to save settings');
+      }
+    } catch (error) {
+      setApiStatus({
+        saving: false,
+        testing: false,
+        message: 'Error saving settings. Please ensure the backend is running.',
+        type: 'error'
+      });
+    }
+  };
+
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('horus_settings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        setSettings(parsed);
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    }
+  }, []);
+
   return (
     <div className="settings-view">
       <div className="settings-header">
         <h2>Settings</h2>
+        <button
+          className="save-all-btn"
+          onClick={saveAllSettings}
+          disabled={apiStatus.saving || apiStatus.testing}
+        >
+          {apiStatus.saving ? 'Saving...' : 'Save All Settings'}
+        </button>
       </div>
+
+      {/* Global status message */}
+      {apiStatus.message && (
+        <div className={`global-status-message ${apiStatus.type}`}>
+          {apiStatus.message.split('\n').map((line, idx) => (
+            <div key={idx}>{line}</div>
+          ))}
+        </div>
+      )}
 
       {/* Notifications */}
       <GlassCard variant="strong">
@@ -326,14 +401,6 @@ function SettingsView() {
             </span>
           </div>
 
-          {apiStatus.message && (
-            <div className={`api-status-message ${apiStatus.type}`}>
-              {apiStatus.message.split('\n').map((line, idx) => (
-                <div key={idx}>{line}</div>
-              ))}
-            </div>
-          )}
-
           <div className="api-buttons">
             <button
               className="save-btn secondary"
@@ -341,13 +408,6 @@ function SettingsView() {
               disabled={apiStatus.testing || apiStatus.saving}
             >
               {apiStatus.testing ? 'Testing...' : 'Test Connection'}
-            </button>
-            <button
-              className="save-btn primary"
-              onClick={saveApiKeys}
-              disabled={apiStatus.saving || apiStatus.testing}
-            >
-              {apiStatus.saving ? 'Saving...' : 'Save API Keys'}
             </button>
           </div>
 
@@ -417,6 +477,17 @@ function SettingsView() {
           </p>
         </div>
       </GlassCard>
+
+      {/* Bottom Save Button */}
+      <div className="bottom-save-container">
+        <button
+          className="save-all-btn bottom"
+          onClick={saveAllSettings}
+          disabled={apiStatus.saving || apiStatus.testing}
+        >
+          {apiStatus.saving ? 'Saving...' : 'Save All Settings'}
+        </button>
+      </div>
     </div>
   );
 }
