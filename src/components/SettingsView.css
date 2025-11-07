@@ -4,7 +4,9 @@
   gap: 20px;
   height: 100%;
   overflow-y: auto;
-  max-width: 900px;
+  max-width: 1200px;
+  width: 100%;
+  padding-right: 8px;
 }
 
 .settings-header h2 {
@@ -32,10 +34,43 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   gap: 20px;
+  min-height: 60px;
 }
 
 .setting-info {
   flex: 1;
+  min-width: 0; /* Allow text to wrap/truncate properly */
+}
+
+/* Responsive: Stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .setting-info {
+    width: 100%;
+  }
+
+  .toggle-switch,
+  .slider,
+  .glass-select {
+    align-self: flex-end;
+  }
+}
+
+/* Additional breakpoint for very narrow containers */
+@media (max-width: 600px) {
+  .setting-item {
+    padding: 12px;
+  }
+
+  .slider {
+    width: 100%;
+    max-width: none;
+  }
 }
 
 .setting-label {
@@ -49,6 +84,32 @@
   font-size: 12px;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+/* Select Dropdown */
+.glass-select {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.glass-select:focus {
+  outline: none;
+  border-color: rgba(138, 43, 226, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+}
+
+.glass-select option {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px;
 }
 
 /* Toggle Switch */
@@ -332,6 +393,18 @@ input:checked + .toggle-slider:before {
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Responsive buttons */
+@media (max-width: 600px) {
+  .api-buttons {
+    flex-direction: column;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
 }
 
 .save-btn.secondary {

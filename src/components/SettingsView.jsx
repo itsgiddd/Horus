@@ -111,8 +111,8 @@ function SettingsView() {
       if (response.ok) {
         const data = await response.json();
         let message = 'Test Results:\n';
-        message += data.oanda_status ? '✓ OANDA: Connected\n' : '✗ OANDA: Failed\n';
-        message += data.cryptocompare_status ? '✓ CryptoCompare: Connected' : '✗ CryptoCompare: Failed';
+        message += data.oanda_status ? '[OK] OANDA: Connected\n' : '[FAILED] OANDA: Failed\n';
+        message += data.cryptocompare_status ? '[OK] CryptoCompare: Connected' : '[FAILED] CryptoCompare: Failed';
 
         setApiStatus({
           saving: false,
@@ -352,7 +352,7 @@ function SettingsView() {
           </div>
 
           <div className="api-info-box">
-            <strong>💡 Note:</strong> API keys are optional. HORUS works without them using simulated data.
+            <strong>Note:</strong> API keys are optional. HORUS works without them using simulated data.
             Add your API keys to access real historical candles and live market data.
           </div>
         </div>
